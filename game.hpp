@@ -16,6 +16,7 @@ class game
 	public:
 		game(); //Constructor
 		int build_reactor();
+		int generate_object_lists_game();
 		int primeUpdate_game();
 		int update_game();
 		int draw_game();
@@ -23,6 +24,7 @@ class game
 		float GameTime;		//Global absolute Game Time (no real clock)
 		float dt;			//delta Time for updating		
 		
+		connection_net	netlist;	//Object for storing the connection information
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 
 		std::list<std::shared_ptr<GameObject>> draw_list;
 		std::list<std::shared_ptr<GameObject>> primeUpdate_list;

@@ -23,21 +23,35 @@ int game::build_reactor()
 	
 	//-------------
 	//defining the reactor here:
-    std::shared_ptr<reactor_vessel> reactor = std::make_shared<reactor_vessel>();			
-    //reactor_vessel reactor;
-    	
-	
+	std::unordered_map<std::string,std::shared_ptr<reactor_vessel>> reactor_vesselMap;		
+	reactor_vesselMap.emplace ("reactor_3", std::make_shared<reactor_vessel>("reactor_3"));	
+	reactor_vesselMap.at("reactor_3")->vessel_volume=2400;
+
+
 	
 	//-------------
 	//Adding the reactor to the Game	
-	gameobjects_list.push_back(reactor);	
-	primeUpdate_list.push_back(reactor);	
-	update_list.push_back(reactor);		
-	draw_list.push_back(reactor);
-	std::cout << "reactor.use_count(): "  << reactor.use_count() << std::endl;
+	gameobjects_list.push_back(reactor_vesselMap.at("reactor_3"));		
+
+	
+	//std::cout << "reactor.use_count(): "  << reactor_1.use_count() << std::endl;
 	
 	return 0;
 }
+
+int game::generate_object_lists_game()
+{
+	std::cout << "---------------------------"<< std::endl;
+	std::cout << "calling generateLists():"<< std::endl;
+	
+	for (std::list<std::shared_ptr<GameObject>>::iterator it = gameobjects_list.begin(); it != gameobjects_list.end(); ++it)
+	{
+		primeUpdate_list.push_back((*it));	
+		update_list.push_back((*it));		
+		draw_list.push_back((*it));		
+	}			
+}
+
 
 int game::primeUpdate_game()
 {

@@ -43,13 +43,15 @@ void my_programm()
     
     game Game;	
 	
+	Game.generate_object_lists_game();
 	Game.primeUpdate_game();
 	Game.update_game();
 	Game.draw_game();	
 
-	std::cout << "Game.gameobjects_list.begin().use_count(): "  << Game.gameobjects_list.begin()->use_count() << std::endl;
- 	
-
+	std::cout << std::endl;
+	std::cout << "Game.gameobjects_list.begin().use_count(): "  << ( *Game.gameobjects_list.begin() ).use_count() << std::endl;
+	std::cout << "Game.gameobjects_list.begin()->name: "  << ( *Game.gameobjects_list.begin() )->name << std::endl;
+	
  	//---------------------
     
     //cv::namedWindow("Display Output", cv::WINDOW_AUTOSIZE + cv::WINDOW_GUI_NORMAL );
