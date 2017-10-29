@@ -27,7 +27,10 @@ int game::place_reactor_components()
 	gameobjects_list.push_back(reactor_vesselMap.at("reactor_1"));
 			
 	fluid_pumpMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
-	gameobjects_list.push_back(fluid_pumpMap.at("fPump_1"));	
+	gameobjects_list.push_back(fluid_pumpMap.at("fPump_1"));
+	
+	fluid_pipeMap.emplace("fPipe_1", std::make_shared<fluid_pipe>("fPipe_1"));
+	gameobjects_list.push_back(fluid_pipeMap.at("fPipe_1"));	
 
 	
 	

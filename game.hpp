@@ -25,7 +25,8 @@ class game
 		float dt;			//delta Time for updating	
 		
 		std::unordered_map<std::string,std::shared_ptr<reactor_vessel>> reactor_vesselMap = {};
-		std::unordered_map<std::string,std::shared_ptr<fluid_pump>> fluid_pumpMap = {};			
+		std::unordered_map<std::string,std::shared_ptr<fluid_pump>> fluid_pumpMap = {};
+		std::unordered_map<std::string,std::shared_ptr<fluid_pipe>> fluid_pipeMap = {};				
 		
 		connection_net	netlist;	//Object for storing the connection information
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 

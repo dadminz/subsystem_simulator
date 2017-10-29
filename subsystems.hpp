@@ -71,9 +71,25 @@ class fluid_interface: public Interface
 	private:
 	
 	public:
-		fluid_interface();	//Constructor
-		int id;		
+		fluid_interface(const std::string &str1);	//Constructor
+		std::string name;	
 };
+
+
+class fluid_pipe: public GameObject
+{	
+	private:
+	
+	public:
+		fluid_pipe(const std::string &str1); //Constructor
+		int primeUpdate();
+		int update();
+		int draw();
+		int init_fluid_interfaces();
+		
+		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};		
+};
+
 
 class fluid_pump: public GameObject
 {	
@@ -84,9 +100,9 @@ class fluid_pump: public GameObject
 		int primeUpdate();
 		int update();
 		int draw();
+		int init_fluid_interfaces();
 		
-		std::shared_ptr <fluid_interface> intake = std::make_shared<fluid_interface>();
-		std::shared_ptr <fluid_interface> outlet = std::make_shared<fluid_interface>();	
+		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 		
 		float Pmax;		//maximum preasure difference	[N / m^2]
 		float dVmax;	//maximum volume flow 			[m^3 / s ]	
@@ -101,13 +117,11 @@ class reactor_vessel: public GameObject
 		int primeUpdate();
 		int update();
 		int draw();
-		float vessel_volume;
+		int init_fluid_interfaces();
 		
 		thermodynamic_state GasPhase;
 		thermodynamic_state LiquidPhase;
 		
-		std::shared_ptr <fluid_interface> Liquid_Inlet = std::make_shared<fluid_interface>();
-		std::shared_ptr <fluid_interface> Liquid_Outlet = std::make_shared<fluid_interface>();
-		std::shared_ptr <fluid_interface> Gas_Inlet    = std::make_shared<fluid_interface>();
-		std::shared_ptr <fluid_interface> Gas_Outlet   = std::make_shared<fluid_interface>();
+		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
+
 };
