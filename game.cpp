@@ -20,6 +20,7 @@ int game::build_reactor()
 {	
 	std::cout << "calling build_reactor()"<< std::endl;
 	
+	
 	//-------------
 	//defining the reactor here:
     std::shared_ptr<reactor_vessel> reactor = std::make_shared<reactor_vessel>();			
