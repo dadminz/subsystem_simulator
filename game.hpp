@@ -15,14 +15,17 @@ class game
 	
 	public:
 		game(); //Constructor
-		int build_reactor();
+		int place_reactor_components();
 		int generate_object_lists_game();
 		int primeUpdate_game();
 		int update_game();
 		int draw_game();
 		
 		float GameTime;		//Global absolute Game Time (no real clock)
-		float dt;			//delta Time for updating		
+		float dt;			//delta Time for updating	
+		
+		std::unordered_map<std::string,std::shared_ptr<reactor_vessel>> reactor_vesselMap = {};
+		std::unordered_map<std::string,std::shared_ptr<fluid_pump>> fluid_pumpMap = {};			
 		
 		connection_net	netlist;	//Object for storing the connection information
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 

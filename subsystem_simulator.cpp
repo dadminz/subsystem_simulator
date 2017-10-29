@@ -34,7 +34,7 @@ void my_programm()
 	plot_line_grid(output,grid_div_x,grid_div_y,grid_div_major,cv::Scalar(30,30,30),1);
 	
 	std::string text = "Reactor Control System v0.1";    
-    cv::putText(output, text , cv::Point2f(5,15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(180,180,180), 1);
+    cv::putText(output, text , cv::Point2f(5,15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(90,255,90), 1);
     std::cout << "Starting: " << text << std::endl;
     std::cout << "canvas: "<< " canvas.cols: "<< canvas.cols << " canvas.rows: " << canvas.rows << std::endl;
     std::cout <<"line_grid: " <<" div_x: " << grid_div_x << " div_y: " << grid_div_y << " div_major: "<< grid_div_major << std::endl;  
@@ -42,15 +42,11 @@ void my_programm()
 	//---------------------
     
     game Game;	
-	
+		
 	Game.generate_object_lists_game();
+	Game.draw_game();	
 	Game.primeUpdate_game();
 	Game.update_game();
-	Game.draw_game();	
-
-	std::cout << std::endl;
-	std::cout << "Game.gameobjects_list.begin().use_count(): "  << ( *Game.gameobjects_list.begin() ).use_count() << std::endl;
-	std::cout << "Game.gameobjects_list.begin()->name: "  << ( *Game.gameobjects_list.begin() )->name << std::endl;
 	
  	//---------------------
     

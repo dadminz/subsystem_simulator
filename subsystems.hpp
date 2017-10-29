@@ -41,8 +41,7 @@ class Interface
 	private:
 	
 	public:
-		int x = 42;
-		std::shared_ptr<Interface> connected;
+
 };
 
 class connection_net
@@ -61,7 +60,7 @@ class thermodynamic_state
 	
 	public:
 		thermodynamic_state(); //Constructor
-		float preasure;		// [N / m^2 ]
+		float pressure;		// [N / m^2 ]
 		float volume;		// [m^3]
 		float temperature;	// [K]
 		float mass;			// [kg]
@@ -81,7 +80,7 @@ class fluid_pump: public GameObject
 	private:
 	
 	public:
-		fluid_pump(); //Constructor
+		fluid_pump(const std::string &str1); //Constructor
 		int primeUpdate();
 		int update();
 		int draw();

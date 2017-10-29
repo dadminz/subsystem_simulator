@@ -13,29 +13,25 @@
 game::game()
 {
 	std::cout << "calling constructor game()"<< std::endl;
-	build_reactor();
+	place_reactor_components();
 }
 
-int game::build_reactor()
+int game::place_reactor_components()
 {	
-	std::cout << "calling build_reactor()"<< std::endl;
+	std::cout << "calling place_reactor_components()"<< std::endl;
 	
 	
 	//-------------
-	//defining the reactor here:
-	std::unordered_map<std::string,std::shared_ptr<reactor_vessel>> reactor_vesselMap;		
-	reactor_vesselMap.emplace ("reactor_3", std::make_shared<reactor_vessel>("reactor_3"));	
-	reactor_vesselMap.at("reactor_3")->vessel_volume=2400;
-
-
 	
-	//-------------
-	//Adding the reactor to the Game	
-	gameobjects_list.push_back(reactor_vesselMap.at("reactor_3"));		
+	reactor_vesselMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1"));	
+	gameobjects_list.push_back(reactor_vesselMap.at("reactor_1"));
+			
+	fluid_pumpMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
+	gameobjects_list.push_back(fluid_pumpMap.at("fPump_1"));	
 
 	
-	//std::cout << "reactor.use_count(): "  << reactor_1.use_count() << std::endl;
 	
+	//-------------	
 	return 0;
 }
 

@@ -34,7 +34,7 @@ fluid_interface::fluid_interface()
 
 //######################################################################
 //Constructor of fluid_pump
-fluid_pump::fluid_pump()
+fluid_pump::fluid_pump(const std::string &str1)
 {
 	std::cout << "calling constructor fluid_pump()"<< std::endl;
 	name = str1;
