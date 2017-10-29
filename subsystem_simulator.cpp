@@ -43,7 +43,6 @@ void my_programm()
     
     game Game;	
 		
-	Game.generate_object_lists_game();
 	Game.draw_game();	
 	Game.primeUpdate_game();
 	Game.update_game();

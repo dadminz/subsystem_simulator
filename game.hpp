@@ -16,6 +16,8 @@ class game
 	public:
 		game(); //Constructor
 		int place_reactor_components();
+		int connect_reactor_components();
+		int init_reactor_components();
 		int generate_object_lists_game();
 		int primeUpdate_game();
 		int update_game();
