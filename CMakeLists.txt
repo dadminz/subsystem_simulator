@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( subsystem_simulator )
+find_package( OpenCV REQUIRED )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+add_executable( subsystem_simulator subsystem_simulator.cpp )
+target_link_libraries( subsystem_simulator ${OpenCV_LIBS} ${Boost_LIBRARIES})
