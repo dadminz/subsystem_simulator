@@ -21,7 +21,7 @@ class game
 		int generate_object_lists_game();
 				
 		template <class T>
-		std::shared_ptr<T> GOCast(const std::string &str2);
+		std::shared_ptr<T> GoCast(const std::string &str2);	//template for Accessing gameobjectsMap object specific pointers
 				
 		int primeUpdate_game();
 		int update_game();
@@ -41,12 +41,4 @@ class game
 		std::list<std::shared_ptr<GameObject>> draw_list;
 		std::list<std::shared_ptr<GameObject>> primeUpdate_list;
 		std::list<std::shared_ptr<GameObject>> update_list;
-		
-		/*
-		template <class T>
-		std::shared_ptr<T> GOCast(const std::string &str2)
-		{				
-			return  std::dynamic_pointer_cast<T>(gameobjectsMap.at(str2));
-		}
-		*/ 	
 };

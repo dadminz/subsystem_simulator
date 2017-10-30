@@ -25,27 +25,15 @@ int game::place_reactor_components()
 	std::cout << "calling place_reactor_components()"<< std::endl;
 		
 	//-------------
-	
-	reactor_vesselMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1"));	
-	gameobjects_list.push_back(reactor_vesselMap.at("reactor_1"));
-	
-	fluid_pipeMap.emplace("fPipe_1", std::make_shared<fluid_pipe>("fPipe_1"));
-	gameobjects_list.push_back(fluid_pipeMap.at("fPipe_1"));	
-			
-	fluid_pumpMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
-	gameobjects_list.push_back(fluid_pumpMap.at("fPump_1"));
-	
-	fluid_pipeMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2"));
-	gameobjects_list.push_back(fluid_pipeMap.at("fPipe_2"));	
-
-	reactor_vesselMap.emplace("reactor_2", std::make_shared<reactor_vessel>("reactor_2"));	
-	gameobjects_list.push_back(reactor_vesselMap.at("reactor_2"));	
-	
-	
-	gameobjectsMap.emplace("reactor_1g", reactor_vesselMap["reactor_1"]);
-	
+		
+	gameobjectsMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1"));	
+	gameobjectsMap.emplace("fPipe_1", std::make_shared<fluid_pipe>("fPipe_1"));
+	gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
+	gameobjectsMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2"));
+	gameobjectsMap.emplace("reactor_2", std::make_shared<reactor_vessel>("reactor_2"));	
 	
 	//-------------	
+	
 	return 0;
 }
 
@@ -59,6 +47,11 @@ int game::init_reactor_components()
 {
 	std::cout << "==========================="<< std::endl;
 	std::cout << "init_reactor_components()"<< std::endl;
+	
+	std::cout << "reactor_1 use_count(): " << gameobjectsMap["reactor_1"].use_count() << std::endl;	
+	GoCast<reactor_vessel>("reactor_1")->index = 99;
+	std::cout << "reactor_1 index: " << GoCast<reactor_vessel>("reactor_1")->index << std::endl;
+	std::cout << "reactor_1 use_count(): " << gameobjectsMap["reactor_1"].use_count() << std::endl;		
 }
 
 int game::generate_object_lists_game()
@@ -66,6 +59,13 @@ int game::generate_object_lists_game()
 	std::cout << "==========================="<< std::endl;
 	std::cout << "calling generateLists():"<< std::endl;
 	
+	//Generates the gameobjects_list fron the gameobjectsMap
+	for (std::unordered_map<std::string,std::shared_ptr<GameObject>>::iterator it = gameobjectsMap.begin(); it != gameobjectsMap.end(); ++it)
+	{
+		gameobjects_list.push_back((*it).second);
+	}
+	
+	//Generates the other_list fron the gameobjects_list
 	for (std::list<std::shared_ptr<GameObject>>::iterator it = gameobjects_list.begin(); it != gameobjects_list.end(); ++it)
 	{
 		primeUpdate_list.push_back((*it));	
@@ -111,7 +111,7 @@ int game::draw_game()
 //templates
 
 template <class T>
-std::shared_ptr<T> game::GOCast(const std::string &str2)
+std::shared_ptr<T> game::GoCast(const std::string &str2)
 {				
 	return  std::dynamic_pointer_cast<T>(gameobjectsMap.at(str2));
 }

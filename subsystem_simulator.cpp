@@ -48,12 +48,6 @@ void my_programm()
 	Game.draw_game();	
 	Game.primeUpdate_game();
 	Game.update_game();
-	
-	std::cout <<"reactor name:" << Game.gameobjectsMap["reactor_1g"]->name << std::endl;
-	std::cout <<"reactor index:" <<   ( std::dynamic_pointer_cast<reactor_vessel>(Game.gameobjectsMap["reactor_1g"]))->index << std::endl;	
-
-	std::cout <<"reactor name:" << Game.gameobjectsMap["reactor_1g"]->name << std::endl;
-	std::cout <<"reactor index:" <<   Game.GOCast<reactor_vessel>("reactor_1g")->index << std::endl;	
 
  	//---------------------
     
