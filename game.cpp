@@ -110,4 +110,8 @@ int game::draw_game()
 //######################################################################
 //templates
 
-
+template <class T>
+std::shared_ptr<T> game::GOCast(const std::string &str2)
+{				
+	return  std::dynamic_pointer_cast<T>(gameobjectsMap.at(str2));
+}
