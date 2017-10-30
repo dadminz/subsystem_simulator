@@ -93,6 +93,8 @@ class reactor_solver
 	
 	public:
 		reactor_solver(const std::string &str1);
+		void solve_me();
+		void solve_type_a();
 		std::string name = "reactorSolver_XXX";
 		int id=1;				
 		std::shared_ptr<reactor_vessel> connected_reactor;
@@ -144,7 +146,7 @@ class reactor_vessel: public GameObject
 		int update();
 		int draw();
 		int init_fluid_interfaces();
-		int index = 42;
+		int index = 9001;
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		

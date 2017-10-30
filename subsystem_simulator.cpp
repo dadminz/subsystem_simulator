@@ -43,7 +43,11 @@ void my_programm()
 	Game.draw_game();
 	Game.primeUpdate_game();
 	Game.update_game();
+	
+	std::cout << "==========================="<< std::endl;
+	Game.solver_reactor_1->solve_type_a();
 
+	
  	//---------------------
     
     //cv::namedWindow("Display Output", cv::WINDOW_AUTOSIZE + cv::WINDOW_GUI_NORMAL );

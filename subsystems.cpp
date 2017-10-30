@@ -42,11 +42,23 @@ fluid_interface::fluid_interface(const std::string &str1)
 
 reactor_solver::reactor_solver(const std::string &str1)
 {
-	std::cout << "calling constructor fluid_interface()"<< std::endl;
+	std::cout << "calling constructor reactor_solver()"<< std::endl;
 	name = str1;
-	std::cout << "name of the fluid_interface: " << str1 << std::endl;			
+	std::cout << "name of the reactor_solver: " << str1 << std::endl;			
 }
 
+void reactor_solver::solve_me()
+{
+	connected_reactor->index = connected_reactor->index+1;
+}
+
+void reactor_solver::solve_type_a()
+{
+	std::cout << "calling solver: ("<< name <<") solve_type_a()"<< std::endl;	
+	
+	
+	
+}
 
 //######################################################################
 //######################################################################
@@ -153,6 +165,10 @@ int reactor_vessel::primeUpdate()
 int reactor_vessel::update()
 {
 	std::cout << "calling reactor_vessel (" <<name<< ") update()"<< std::endl;
+	
+	connected_solver->solve_me();
+	std::cout << name << " index: " << index << std::endl;
+	
 	return 0;	
 }
 

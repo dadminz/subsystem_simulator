@@ -69,10 +69,8 @@ int game::connect_reactor_components()
 	//connect solvers to reactors:	
 	solver_reactor_1->connected_reactor = GoCast<reactor_vessel>("reactor_1");
 	GoCast<reactor_vessel>("reactor_1")->connected_solver = solver_reactor_1;
-	
-	
-	
-				
+	solver_reactor_2->connected_reactor = GoCast<reactor_vessel>("reactor_2");
+	GoCast<reactor_vessel>("reactor_2")->connected_solver = solver_reactor_2;				
 }
 
 int game::init_reactor_components()
@@ -80,10 +78,7 @@ int game::init_reactor_components()
 	std::cout << "==========================="<< std::endl;
 	std::cout << "init_reactor_components()"<< std::endl;
 	
-	std::cout << "reactor_1 use_count(): " << gameobjectsMap["reactor_1"].use_count() << std::endl;	
-	GoCast<reactor_vessel>("reactor_1")->index = 99;
-	std::cout << "reactor_1 index: " << GoCast<reactor_vessel>("reactor_1")->index << std::endl;
-	std::cout << "reactor_1 use_count(): " << gameobjectsMap["reactor_1"].use_count() << std::endl;		
+
 }
 
 
