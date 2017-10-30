@@ -46,6 +46,7 @@ void my_programm()
 	
 	std::cout << "==========================="<< std::endl;
 	Game.solver_reactor_1->solve_type_a();
+	
 
 	
  	//---------------------
