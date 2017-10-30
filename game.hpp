@@ -19,6 +19,7 @@ class game
 		int connect_reactor_components();
 		int init_reactor_components();
 		int generate_object_lists_game();
+		
 		int primeUpdate_game();
 		int update_game();
 		int draw_game();
@@ -26,6 +27,8 @@ class game
 		float GameTime;		//Global absolute Game Time (no real clock)
 		float dt;			//delta Time for updating	
 		
+		
+		std::unordered_map<std::string,std::shared_ptr<GameObject>> gameobjectsMap = {};		
 		std::unordered_map<std::string,std::shared_ptr<reactor_vessel>> reactor_vesselMap = {};
 		std::unordered_map<std::string,std::shared_ptr<fluid_pump>> fluid_pumpMap = {};
 		std::unordered_map<std::string,std::shared_ptr<fluid_pipe>> fluid_pipeMap = {};				
@@ -34,5 +37,11 @@ class game
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 
 		std::list<std::shared_ptr<GameObject>> draw_list;
 		std::list<std::shared_ptr<GameObject>> primeUpdate_list;
-		std::list<std::shared_ptr<GameObject>> update_list;	
+		std::list<std::shared_ptr<GameObject>> update_list;
+		
+		template <class T>
+		T GOCast(const std::string &str2)
+		{
+			return  std::dynamic_pointer_cast<T>(gameobjectsMap[str2]);
+		}	
 };

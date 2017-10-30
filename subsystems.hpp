@@ -118,6 +118,7 @@ class reactor_vessel: public GameObject
 		int update();
 		int draw();
 		int init_fluid_interfaces();
+		int index = 42;
 		
 		thermodynamic_state GasPhase;
 		thermodynamic_state LiquidPhase;

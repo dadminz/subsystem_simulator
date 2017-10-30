@@ -41,6 +41,10 @@ int game::place_reactor_components()
 	reactor_vesselMap.emplace("reactor_2", std::make_shared<reactor_vessel>("reactor_2"));	
 	gameobjects_list.push_back(reactor_vesselMap.at("reactor_2"));	
 	
+	
+	gameobjectsMap.emplace("reactor_1g", reactor_vesselMap["reactor_1"]);
+	
+	
 	//-------------	
 	return 0;
 }
@@ -69,7 +73,6 @@ int game::generate_object_lists_game()
 		draw_list.push_back((*it));		
 	}			
 }
-
 
 int game::primeUpdate_game()
 {
@@ -103,3 +106,8 @@ int game::draw_game()
 		(*it)->draw();
 	}		
 }
+
+//######################################################################
+//templates
+
+
