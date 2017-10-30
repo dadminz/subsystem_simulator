@@ -30,11 +30,8 @@ class game
 		float GameTime;		//Global absolute Game Time (no real clock)
 		float dt;			//delta Time for updating	
 		
-		
 		std::unordered_map<std::string,std::shared_ptr<GameObject>> gameobjectsMap = {};		
-		std::unordered_map<std::string,std::shared_ptr<reactor_vessel>> reactor_vesselMap = {};
-		std::unordered_map<std::string,std::shared_ptr<fluid_pump>> fluid_pumpMap = {};
-		std::unordered_map<std::string,std::shared_ptr<fluid_pipe>> fluid_pipeMap = {};				
+		std::shared_ptr<reactor_solver> solver_reactor_1 = std::make_shared<reactor_solver>("solver_reactor_1");	
 		
 		connection_net	netlist;	//Object for storing the connection information
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 

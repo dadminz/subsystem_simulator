@@ -45,41 +45,34 @@ int game::connect_reactor_components()
 	//-------------
 	//define fluid_interfaces:
 	
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("water_inlet_1",std::make_shared<fluid_interface>("water_inlet_1"));
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("steam_outlet_1",std::make_shared<fluid_interface>("steam_outlet_1"));
-	
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_1",std::make_shared<fluid_interface>("port_1"));
+	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("water_inlet_1",std::make_shared<fluid_interface>("water_inlet_1"));	
+	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("steam_outlet_1",std::make_shared<fluid_interface>("steam_outlet_1"));	
+	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_1",std::make_shared<fluid_interface>("port_1"));	
 	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_2",std::make_shared<fluid_interface>("port_2"));		
 	
-	//std::cout << "reactor_1 No. of fluid_interfaces: "<< GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.count("steam_outlet_1") << std::endl;
-	
-	
+	//selftargets
+	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]; //selftarget
+	//GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target = GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"];	 //selftarget
+		
 	//-------------
-	//init fluid_interfaces:
-	
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->index = 444;	
-	std::cout << "reactor_1 interface water_inlet_1 index: "<< GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->index << std::endl;	
+	//init fluid_interfaces:	
+	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->index = 100;
+	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->index = 200;	
 
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->index = 555;	
-	std::cout << "fPipe_1 interface port_1 index: "<< GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->index << std::endl;
 	
 	//-------------
 	//connect fluid_interfaces:	
-	
-	//inteface targeting to itself (safety state ... no dangling pointer):
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]; //selftarget
 	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target = GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"];	
-
-
-	
-	//inteface targeting to itself (safety state ... no dangling pointer):
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target = GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"];	 //selftarget
 	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"];
+		
+	//-------------
+	//connect solvers to reactors:	
+	solver_reactor_1->connected_reactor = GoCast<reactor_vessel>("reactor_1");
+	GoCast<reactor_vessel>("reactor_1")->connected_solver = solver_reactor_1;
 	
-	std::cout << "reactor_1 int index read from target: "<< GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target->index << std::endl;	
-	std::cout << "fPipe_1 int index read from target: " << GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target->index << std::endl;
-	std::cout << "fPipe_1 int index read from target->target: " << GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target->target->index << std::endl;
-	std::cout << "fPipe_1 int index read from target->target->target: " << GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target->target->target->index << std::endl;			
+	
+	
+				
 }
 
 int game::init_reactor_components()
@@ -92,6 +85,10 @@ int game::init_reactor_components()
 	std::cout << "reactor_1 index: " << GoCast<reactor_vessel>("reactor_1")->index << std::endl;
 	std::cout << "reactor_1 use_count(): " << gameobjectsMap["reactor_1"].use_count() << std::endl;		
 }
+
+
+//######################################################################
+
 
 int game::generate_object_lists_game()
 {

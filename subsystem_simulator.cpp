@@ -14,9 +14,6 @@
 #include "game.hpp"
 #include "game.cpp"
 
-
-
-
 void my_programm()
 {	
 	//Initializing the Canvas CV_8UC3 8bits unsigned with 3 color channels Blue Green Red (BGR)
@@ -43,7 +40,7 @@ void my_programm()
     
     game Game;	
 	
-	Game.draw_game();	
+	Game.draw_game();
 	Game.primeUpdate_game();
 	Game.update_game();
 

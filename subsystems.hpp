@@ -7,6 +7,13 @@
 #include <fstream>
 #include <math.h>
 
+//Declare Classes:
+class reactor_solver;
+class reactor_vessel;
+
+
+//Define Classes:
+
 
 class GameObject
 {	
@@ -77,6 +84,23 @@ class fluid_interface: public Interface
 		std::shared_ptr<fluid_interface> target;
 };
 
+//######################################################################
+//Solver Classes:
+
+class reactor_solver
+{
+	private:
+	
+	public:
+		reactor_solver(const std::string &str1);
+		std::string name = "reactorSolver_XXX";
+		int id=1;				
+		std::shared_ptr<reactor_vessel> connected_reactor;
+				
+};
+
+//######################################################################
+//Component Classes:
 
 class fluid_pipe: public GameObject
 {	
@@ -121,10 +145,11 @@ class reactor_vessel: public GameObject
 		int draw();
 		int init_fluid_interfaces();
 		int index = 42;
+
+		std::shared_ptr<reactor_solver> connected_solver;
 		
-		thermodynamic_state GasPhase;
-		thermodynamic_state LiquidPhase;
-		
+		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
+
 
 };

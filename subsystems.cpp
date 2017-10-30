@@ -33,6 +33,25 @@ fluid_interface::fluid_interface(const std::string &str1)
 	name = str1;
 	std::cout << "name of the fluid_interface: " << str1 << std::endl;		
 }
+
+//######################################################################
+//######################################################################
+//######################################################################
+//SolverClasses:
+
+
+reactor_solver::reactor_solver(const std::string &str1)
+{
+	std::cout << "calling constructor fluid_interface()"<< std::endl;
+	name = str1;
+	std::cout << "name of the fluid_interface: " << str1 << std::endl;			
+}
+
+
+//######################################################################
+//######################################################################
+//######################################################################
+//Component Classes:
 //######################################################################
 //Constructor of fluid_pipe
 fluid_pipe::fluid_pipe(const std::string &str1)
