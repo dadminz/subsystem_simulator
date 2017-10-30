@@ -41,7 +41,7 @@ class Interface
 	private:
 	
 	public:
-
+	std::string name;	
 };
 
 class connection_net
@@ -72,7 +72,9 @@ class fluid_interface: public Interface
 	
 	public:
 		fluid_interface(const std::string &str1);	//Constructor
-		std::string name;	
+		int index = 666;
+		//std::weak_ptr<std::shared_ptr<fluid_interface>> target;
+		std::shared_ptr<fluid_interface> target;
 };
 
 

@@ -42,8 +42,6 @@ void my_programm()
 	//---------------------
     
     game Game;	
-		
-
 	
 	Game.draw_game();	
 	Game.primeUpdate_game();
