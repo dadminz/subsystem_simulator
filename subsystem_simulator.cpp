@@ -48,14 +48,12 @@ void my_programm()
 	Game.solver_reactor_1->init_thermodynamic_state_type_a();	
 	std::cout << std::endl << std::endl << std::endl;
 	std::cout << "Starting Sim Loop:" << std::endl;
-	for(int i = 0 ; i< 10 ; i++)
+	for(int i = 0 ; i< 26 ; i++)
 	{
 		std::cout <<std::endl  <<"GameTime[s]: " << Game.GameTime << std::endl;
-		Game.solver_reactor_1->solve_type_a();
+		Game.solver_reactor_1->solve_type_a(Game.dt);
 		Game.GameTime = Game.GameTime + Game.dt;
 	}
-
-
 	
  	//---------------------
     

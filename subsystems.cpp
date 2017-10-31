@@ -112,7 +112,7 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	
 }
 
-void reactor_solver::solve_type_a()
+void reactor_solver::solve_type_a(const double &dt)
 {
 	std::cout << "==========================="<< std::endl;
 	std::cout << "calling solver: ("<< name <<") solve_type_a()"<< std::endl;	
@@ -120,24 +120,51 @@ void reactor_solver::solve_type_a()
 	//creating a working copy of the reactor thermodynamic_state water:
 	thermodynamic_state local_water = *(connected_reactor->thermodynamic_stateMap.at("water"));
 	thermodynamic_state local_steam = *(connected_reactor->thermodynamic_stateMap.at("steam"));	
+	
+
 	std::cout << "solving for local_water name: " << local_water.name << std::endl;
 	std::cout << "solving for local_steam name: " << local_steam.name << std::endl;
-	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
-	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
-	
-	//--------------
 
 	
+	//--------------
+	
+	double tP = connected_reactor->thermal_power ; // power of the reactor
+	double rV = connected_reactor->V_vessel;	   // Reactor vessel volume
+	double dT;									   // temperature change
+	double dVwater = 1;			// dP / Rpipe	   // Water flow into the Reactor					   	
+	//dt is global time delta
 	
 	
 	
+	//Heating the Reactor Water
+	dT = tP*dt * (1/(local_water.Cv*local_water.m));
+	std::cout << "dT: " << dT << std::endl;		
+	local_water.T = local_water.T + dT;	
+	local_water.V = local_water.V + dVwater;
 	
+	//instant heat transfer between water and steam vapor
+	local_steam.T = local_water.T;
 	
+	//steam Volume (vessel-water)
+	local_steam.V = rV - local_water.V;
+	
+	//preassure calculation for steam:
+	local_steam.p = (local_steam.m/local_steam.M) * ( (local_steam.R*local_steam.T) / local_steam.V ); // p = m/M * (R*T)/V   ... Ideal Gas formular
+	local_water.p = local_steam.p;	//the vessel preassure is created by the steam preassure (fluids are incompressible)
+	
+	//steam density calc:
+	local_steam.rho = local_steam.m/local_steam.V;
+		
 	//--------------
 	
 	//assigning the working copy of the reactor thermodynamic_state back to the reactor:
 	(*(connected_reactor->thermodynamic_stateMap.at("water"))) = local_water;
 	(*(connected_reactor->thermodynamic_stateMap.at("steam"))) = local_steam;	
+	
+	std::cout << "reactor thermal power [MW]: " << tP/1000000 << std::endl; 
+	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
+	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
+
 }
 
 //######################################################################
