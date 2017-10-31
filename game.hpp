@@ -27,8 +27,8 @@ class game
 		int update_game();
 		int draw_game();
 		
-		float GameTime;		//Global absolute Game Time (no real clock)
-		float dt;			//delta Time for updating	
+		double GameTime=0;		// [s] Global absolute Game Time (no real clock)
+		double dt=1;			// [s] delta Time for updating	
 		
 		std::unordered_map<std::string,std::shared_ptr<GameObject>> gameobjectsMap = {};		
 		std::shared_ptr<reactor_solver> solver_reactor_1 = std::make_shared<reactor_solver>("solver_reactor_1");	

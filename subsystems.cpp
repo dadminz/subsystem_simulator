@@ -56,7 +56,10 @@ void reactor_solver::solve_me()
 
 void reactor_solver::init_thermodynamic_state_type_a()
 {
+	std::cout << "==========================="<< std::endl;
 	std::cout << "calling solver: ("<< name <<") init_thermodynamic_state_type_a()"<< std::endl;
+	
+	//create the thermo dynamic states for the reactor
 	connected_reactor->thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>("water"));
 	connected_reactor->thermodynamic_stateMap.emplace("steam", std::make_shared<thermodynamic_state>("steam"));
 	
@@ -86,13 +89,13 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	thermodynamic_state local_steam = *(connected_reactor->thermodynamic_stateMap.at("steam"));	
 	std::cout << "local_steam name: " << local_steam.name << std::endl;
 	
-	//init the thermodynamic state parameters (for water):
+	//init the thermodynamic state parameters (for steam):
 	local_steam.state_type = "gas";					// "solid" "fluid" "gas"
 	local_steam.p = 101325.0;						// [N / m^2 ] 	pressure
 	local_steam.rho = local_steam.m/local_steam.V;	// [kg / m^3 ]  density (water liquid 1000)
 	local_steam.V = 25.0;							// [m^3]		volume	
 	local_steam.T = 300.0;							// [K]			temperature
-	local_steam.m = 25.0;								// [kg]			mass
+	local_steam.m = 25.0;							// [kg]			mass
 	local_steam.M = 0.0160428;						// [kg / mol ]	molar mass
 	local_steam.Cv = 2080.0;						// [J / (kg*K)] Specific heat capacity (const volume)
 	local_steam.Cp = 2080.0;						// [J / (kg*K)] Specific heat capacity (const preassure)
@@ -111,10 +114,30 @@ void reactor_solver::init_thermodynamic_state_type_a()
 
 void reactor_solver::solve_type_a()
 {
+	std::cout << "==========================="<< std::endl;
 	std::cout << "calling solver: ("<< name <<") solve_type_a()"<< std::endl;	
+
+	//creating a working copy of the reactor thermodynamic_state water:
+	thermodynamic_state local_water = *(connected_reactor->thermodynamic_stateMap.at("water"));
+	thermodynamic_state local_steam = *(connected_reactor->thermodynamic_stateMap.at("steam"));	
+	std::cout << "solving for local_water name: " << local_water.name << std::endl;
+	std::cout << "solving for local_steam name: " << local_steam.name << std::endl;
+	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
+	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
+	
+	//--------------
+
 	
 	
 	
+	
+	
+	
+	//--------------
+	
+	//assigning the working copy of the reactor thermodynamic_state back to the reactor:
+	(*(connected_reactor->thermodynamic_stateMap.at("water"))) = local_water;
+	(*(connected_reactor->thermodynamic_stateMap.at("steam"))) = local_steam;	
 }
 
 //######################################################################
