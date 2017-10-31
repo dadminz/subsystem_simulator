@@ -78,6 +78,7 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	local_water.Cv = 4181.3;						// [J / (kg*K)] Specific heat capacity (const volume)
 	local_water.Cp = 4181.3;						// [J / (kg*K)] Specific heat capacity (const preassure)
 	local_water.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids	
+	local_water.Hv = 43990;							// [J / mol ] Verdampfungsenthalpie
 
 	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
 	
@@ -99,8 +100,8 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	local_steam.M = 0.0160428;						// [kg / mol ]	molar mass
 	local_steam.Cv = 2080.0;						// [J / (kg*K)] Specific heat capacity (const volume)
 	local_steam.Cp = 2080.0;						// [J / (kg*K)] Specific heat capacity (const preassure)
-	local_steam.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids
-	
+	local_steam.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids	
+	local_steam.Hv = 43990;							// [J / mol ] Verdampfungsenthalpie 25°C
 	
 	local_steam.m = (local_steam.p*local_steam.V*local_steam.M) / (local_steam.R*local_steam.T) ;	// p*V*M / R*T = m  ... Ideal Gas formular
 	local_steam.rho = local_steam.m/local_steam.V;
@@ -131,16 +132,32 @@ void reactor_solver::solve_type_a(const double &dt)
 	double tP = connected_reactor->thermal_power ; // power of the reactor
 	double rV = connected_reactor->V_vessel;	   // Reactor vessel volume
 	double dT;									   // temperature change
-	double dVwater = 1;			// dP / Rpipe	   // Water flow into the Reactor					   	
-	//dt is global time delta
+	double dVwater = 0;			// dP / Rpipe	   // Water flow into the Reactor					   	
+	double dm = 0;								   // boiled off water mass
+	
+	//Waterflow into the reactor
+	local_water.V = local_water.V + dVwater;	
+	
+	if(local_water.p >= magnus(local_water.T))
+	{
+		//Heating the Reactor Water
+		dT = tP*dt * (1/(local_water.Cv*local_water.m));
+		local_water.T = local_water.T + dT;	
+	}
+	else
+	{
+		dT = 0;
+		//Converting Water to Steam (Phase transition) (creating steam mass)
+		// Hv [J / mol ] Verdampfungsenthalpie 25°C
+		
+		dm = (tP*dt) / (local_steam.Hv/local_steam.M); 		// delta mass [ W * s ] / [(J /mol)*(mol/ kg)] 		
+		local_water.m = local_water.m - dm;					//liquid water mass loss to boiling off into steam		
+		local_water.V = local_water.m / local_water.rho;	//adjusting the volume to the mass loss		
+		local_steam.m = local_steam.m + dm;					//increasing the steam mass by boiled off water mass
+	}
 	
 	
-	
-	//Heating the Reactor Water
-	dT = tP*dt * (1/(local_water.Cv*local_water.m));
-	std::cout << "dT: " << dT << std::endl;		
-	local_water.T = local_water.T + dT;	
-	local_water.V = local_water.V + dVwater;
+	std::cout << "dT: " << dT << "\twater-to-steam mass (dm): " << dm << std::endl;
 	
 	//instant heat transfer between water and steam vapor
 	local_steam.T = local_water.T;

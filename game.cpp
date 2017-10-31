@@ -137,6 +137,17 @@ int game::draw_game()
 		(*it)->draw();
 	}		
 }
+int game::create_plot_points()
+{
+		graph_pressure_steam.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("steam")->p)) ;
+		graph_temperature_steam.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("steam")->T));
+		graph_volume_steam.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("steam")->V));	
+		
+		graph_pressure_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->p)) ;
+		graph_temperature_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->T));
+		graph_volume_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->V));			
+}
+
 
 //######################################################################
 //templates

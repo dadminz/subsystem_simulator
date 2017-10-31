@@ -31,4 +31,51 @@ void plot_line_grid(const cv::Mat &mat,const int &spacing_x, const int &spacing_
 	}
 }
 
+void plot_graph_xy(const cv::Mat &mat, std::list<cv::Point2f> &points, const cv::Scalar &color,const cv::Point2f &origin,const double &size_x,const double &size_y, const std::string &str1)
+{
+	double max_y=0, max_x=0;
 
+	cv::Point2f next,offset;
+	
+	for (std::list<cv::Point2f>::iterator it = points.begin(); it != points.end(); ++it)
+	{
+		if( it->y > max_y)
+		{
+			max_y = it->y;
+		}
+		if( it->x > max_x)
+		{
+			max_x = it->x;
+		}
+	}
+	
+	for (std::list<cv::Point2f>::iterator it = points.begin(); it != points.end(); ++it)
+	{
+		next = (*it);
+		next.x = (next.x/max_x)*size_x + origin.x; 
+		next.y = (-next.y/max_y)*size_y + origin.y; 
+				
+		cv::circle(mat,next,1,color,CV_FILLED,CV_FILLED,0);
+		
+		//std::cout <<"next: " << next << std::endl;
+	}
+	
+	cv::line(mat,origin,origin+cv::Point2f(size_x,0),cv::Scalar(150,150,150),2,1);
+	cv::line(mat,origin,origin-cv::Point2f(0,size_y),cv::Scalar(150,150,150),2,1);
+	offset = cv::Point2f(0,20);
+	cv::putText(mat, str1 , origin+offset, cv::FONT_HERSHEY_SIMPLEX, 0.75, color, 1);	
+}
+
+double magnus(const double temperatur)
+{
+	//function for calculating the water steam pressure phase line
+	double tk = temperatur - 273.15;
+	double c1 = 17.08085;
+	double c2 = 234.175;
+	double e0 = 610.78;
+	double druck;
+	
+	druck = e0 * exp( (c1*tk) / (c2+tk) );
+		
+	return druck;	
+}

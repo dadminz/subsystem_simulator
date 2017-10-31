@@ -26,6 +26,14 @@ class game
 		int primeUpdate_game();
 		int update_game();
 		int draw_game();
+		int create_plot_points();
+		std::list<cv::Point2f>graph_pressure_steam;
+		std::list<cv::Point2f>graph_temperature_steam;
+		std::list<cv::Point2f>graph_volume_steam;
+		
+		std::list<cv::Point2f>graph_pressure_water;
+		std::list<cv::Point2f>graph_temperature_water;
+		std::list<cv::Point2f>graph_volume_water;
 		
 		double GameTime=0;		// [s] Global absolute Game Time (no real clock)
 		double dt=1;			// [s] delta Time for updating	
