@@ -66,11 +66,23 @@ class thermodynamic_state
 	private:
 	
 	public:
-		thermodynamic_state(); //Constructor
-		float pressure;		// [N / m^2 ]
-		float volume;		// [m^3]
-		float temperature;	// [K]
-		float mass;			// [kg]
+		thermodynamic_state(const std::string &str1); //Constructor
+		int id;
+		std::string state_type; //e.g solid , liquid , gas ...
+		std::string name;		//e.g water, steam
+		
+		double R = 8.3144598;	//[ J / (mol * K) ] ideal gas constant 
+		
+		double p;				// [N / m^2 ] 	pressure
+		double rho;				// [kg / m^3 ]  density
+		double V;				// [m^3]		volume	
+		double T;				// [K]			temperature
+		double m;				// [kg]			mass
+		double M;				// [kg / mol ]	molar mass
+		double Cv;				// [J / (kg*K)] Specific heat capacity (const volume)
+		double Cp;				// [J / (kg*K)] Specific heat capacity (const preassure)
+		
+		double av;				// [1/K] Thermal expansion (volume)	req. for solids and liquids
 };
 
 class fluid_interface: public Interface 
@@ -79,8 +91,7 @@ class fluid_interface: public Interface
 	
 	public:
 		fluid_interface(const std::string &str1);	//Constructor
-		int index = 666;
-		//std::weak_ptr<std::shared_ptr<fluid_interface>> target;
+		int index = 666;		
 		std::shared_ptr<fluid_interface> target;
 };
 
@@ -94,6 +105,7 @@ class reactor_solver
 	public:
 		reactor_solver(const std::string &str1);
 		void solve_me();
+		void init_thermodynamic_state_type_a();
 		void solve_type_a();
 		std::string name = "reactorSolver_XXX";
 		int id=1;				
@@ -132,8 +144,8 @@ class fluid_pump: public GameObject
 		
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 		
-		float Pmax;		//maximum preasure difference	[N / m^2]
-		float dVmax;	//maximum volume flow 			[m^3 / s ]	
+		double Pmax;	//maximum preasure difference	[N / m^2]
+		double dVmax;	//maximum volume flow 			[m^3 / s ]	
 };
 
 class reactor_vessel: public GameObject
@@ -152,6 +164,8 @@ class reactor_vessel: public GameObject
 		
 		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
-
-
+		
+		//physical properties:
+		
+		double V_vessel = 100; // [m^3] reactor vessel volume
 };

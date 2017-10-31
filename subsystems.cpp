@@ -19,9 +19,11 @@ connection_net::connection_net()
 
 //######################################################################
 //Constructor of thermodynamic_state
-thermodynamic_state::thermodynamic_state()
+thermodynamic_state::thermodynamic_state(const std::string &str1)
 {
 	std::cout << "calling constructor thermodynamic_state()"<< std::endl;
+	name = str1;
+	std::cout << "name of the thermodynamic_state: " << str1 << std::endl;	
 }
 
 
@@ -50,6 +52,61 @@ reactor_solver::reactor_solver(const std::string &str1)
 void reactor_solver::solve_me()
 {
 	connected_reactor->index = connected_reactor->index+1;
+}
+
+void reactor_solver::init_thermodynamic_state_type_a()
+{
+	std::cout << "calling solver: ("<< name <<") init_thermodynamic_state_type_a()"<< std::endl;
+	connected_reactor->thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>("water"));
+	connected_reactor->thermodynamic_stateMap.emplace("steam", std::make_shared<thermodynamic_state>("steam"));
+	
+	//creating a working copy of the reactor thermodynamic_state water:
+	thermodynamic_state local_water = *(connected_reactor->thermodynamic_stateMap.at("water"));	
+	std::cout << "local_water name: " << local_water.name << std::endl;
+	
+	//init the thermodynamic state parameters (for water):
+	local_water.state_type = "fluid";				// "solid" "fluid" "gas"
+	local_water.p = 101325.0;						// [N / m^2 ] 	pressure
+	local_water.rho = 1000;							// [kg / m^3 ]  density (water liquid 1000)
+	local_water.V = 75.0;							// [m^3]		volume	
+	local_water.T = 300.0;							// [K]			temperature
+	local_water.m = local_water.V*local_water.rho;	// [kg]			mass
+	local_water.M = 0.0160428;						// [kg / mol ]	molar mass
+	local_water.Cv = 4181.3;						// [J / (kg*K)] Specific heat capacity (const volume)
+	local_water.Cp = 4181.3;						// [J / (kg*K)] Specific heat capacity (const preassure)
+	local_water.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids	
+
+	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
+	
+	//assigning the working copy of the reactor thermodynamic_state back to the reactor:
+	(*(connected_reactor->thermodynamic_stateMap.at("water"))) = local_water;
+
+
+	//creating a working copy of the reactor thermodynamic_state steam:
+	thermodynamic_state local_steam = *(connected_reactor->thermodynamic_stateMap.at("steam"));	
+	std::cout << "local_steam name: " << local_steam.name << std::endl;
+	
+	//init the thermodynamic state parameters (for water):
+	local_steam.state_type = "gas";					// "solid" "fluid" "gas"
+	local_steam.p = 101325.0;						// [N / m^2 ] 	pressure
+	local_steam.rho = local_steam.m/local_steam.V;	// [kg / m^3 ]  density (water liquid 1000)
+	local_steam.V = 25.0;							// [m^3]		volume	
+	local_steam.T = 300.0;							// [K]			temperature
+	local_steam.m = 25.0;								// [kg]			mass
+	local_steam.M = 0.0160428;						// [kg / mol ]	molar mass
+	local_steam.Cv = 2080.0;						// [J / (kg*K)] Specific heat capacity (const volume)
+	local_steam.Cp = 2080.0;						// [J / (kg*K)] Specific heat capacity (const preassure)
+	local_steam.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids
+	
+	
+	local_steam.m = (local_steam.p*local_steam.V*local_steam.M) / (local_steam.R*local_steam.T) ;	// p*V*M / R*T = m  ... Ideal Gas formular
+	local_steam.rho = local_steam.m/local_steam.V;
+	
+	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
+	
+	//assigning the working copy of the reactor thermodynamic_state back to the reactor:
+	(*(connected_reactor->thermodynamic_stateMap.at("steam"))) = local_steam;
+	
 }
 
 void reactor_solver::solve_type_a()

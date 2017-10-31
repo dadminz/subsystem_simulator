@@ -45,8 +45,9 @@ void my_programm()
 	Game.update_game();
 	
 	std::cout << "==========================="<< std::endl;
+	Game.solver_reactor_1->init_thermodynamic_state_type_a();	
 	Game.solver_reactor_1->solve_type_a();
-	
+
 
 	
  	//---------------------
