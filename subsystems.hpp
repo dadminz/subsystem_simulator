@@ -81,7 +81,7 @@ class thermodynamic_state
 		double M;				// [kg / mol ]	molar mass
 		double Cv;				// [J / (kg*K)] Specific heat capacity (const volume)
 		double Cp;				// [J / (kg*K)] Specific heat capacity (const preassure)
-		double Hv;				// [J / mol ] Verdampfungsenthalpie
+		double Hv;				// [J / mol ]	Verdampfungsenthalpie
 		
 		double av;				// [1/K] Thermal expansion (volume)	req. for solids and liquids
 };
@@ -161,14 +161,14 @@ class reactor_vessel: public GameObject
 		int init_fluid_interfaces();
 		int index = 9001;
 		
-		double thermal_power = 1000*pow(10,6);	
+		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		
 		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 		
-		//physical properties:
+		//physical properties of the reactor:
 		
 		double V_vessel = 100; // [m^3] reactor vessel volume
 };

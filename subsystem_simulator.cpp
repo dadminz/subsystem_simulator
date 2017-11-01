@@ -51,26 +51,28 @@ void my_programm()
 	Game.solver_reactor_1->init_thermodynamic_state_type_a();	
 	std::cout << std::endl << std::endl << std::endl;
 	std::cout << "Starting Sim Loop:" << std::endl;
-	for(int i = 0 ; i< 3000 ; i++)
-	{
-		std::cout <<std::endl  <<"GameTime[s]: " << Game.GameTime << std::endl;		
+	for(int i = 0 ; i< 4000 ; i++)
+	{		
+		std::cout <<std::endl  <<"GameTime[s]: " << Game.GameTime << std::endl;
+		if(i%200 == 0)
+		{
+
+			output.setTo( cv::Scalar(0,0,0) );	
+			plot_graph_xy(output,Game.graph_pressure_steam,cv::Scalar(255,0,0),cv::Point2f(100,700),200,100,"steam_pressure");
+			plot_graph_xy(output,Game.graph_volume_steam,cv::Scalar(0,255,0),cv::Point2f(350,700),200,100,"steam_volume");	
+			plot_graph_xy(output,Game.graph_temperature_steam,cv::Scalar(0,0,255),cv::Point2f(600,700),200,100,"steam_temperature");
+		
+			plot_graph_xy(output,Game.graph_pressure_water,cv::Scalar(255,0,0),cv::Point2f(100,550),200,100,"water_pressure");
+			plot_graph_xy(output,Game.graph_volume_water,cv::Scalar(0,255,0),cv::Point2f(350,550),200,100,"water_volume");	
+			plot_graph_xy(output,Game.graph_temperature_water,cv::Scalar(0,0,255),cv::Point2f(600,550),200,100,"water_temperature");	
+					
+			cv::imshow("Display Output", output+canvas);       
+			cv::waitKey(1);	
+		}
+		
 		Game.solver_reactor_1->solve_type_a(Game.dt);
 		Game.GameTime = Game.GameTime + Game.dt;
-		Game.create_plot_points();	
-		
-		output.setTo( cv::Scalar(0,0,0) ); 
-		
-		plot_graph_xy(output,Game.graph_pressure_steam,cv::Scalar(255,0,0),cv::Point2f(100,700),300,200,"steam_pressure");
-		plot_graph_xy(output,Game.graph_volume_steam,cv::Scalar(0,255,0),cv::Point2f(500,700),300,200,"steam_volume");	
-		plot_graph_xy(output,Game.graph_temperature_steam,cv::Scalar(0,0,255),cv::Point2f(900,700),300,200,"steam_temperature");
-		
-		plot_graph_xy(output,Game.graph_pressure_water,cv::Scalar(255,0,0),cv::Point2f(100,400),300,200,"water_pressure");
-		plot_graph_xy(output,Game.graph_volume_water,cv::Scalar(0,255,0),cv::Point2f(500,400),300,200,"water_volume");	
-		plot_graph_xy(output,Game.graph_temperature_water,cv::Scalar(0,0,255),cv::Point2f(900,400),300,200,"water_temperature");
-		
-					
-		cv::imshow("Display Output", output+canvas);       
-        cv::waitKey(1);		
+		Game.create_plot_points();				
 	}
 
 	cv::imshow("Display Output", output+canvas);       

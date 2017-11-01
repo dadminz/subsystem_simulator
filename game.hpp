@@ -27,10 +27,11 @@ class game
 		int update_game();
 		int draw_game();
 		int create_plot_points();
+		
+		//lists for the graph plotting ... needs more work !
 		std::list<cv::Point2f>graph_pressure_steam;
 		std::list<cv::Point2f>graph_temperature_steam;
-		std::list<cv::Point2f>graph_volume_steam;
-		
+		std::list<cv::Point2f>graph_volume_steam;		
 		std::list<cv::Point2f>graph_pressure_water;
 		std::list<cv::Point2f>graph_temperature_water;
 		std::list<cv::Point2f>graph_volume_water;
@@ -40,9 +41,8 @@ class game
 		
 		std::unordered_map<std::string,std::shared_ptr<GameObject>> gameobjectsMap = {};		
 		std::shared_ptr<reactor_solver> solver_reactor_1 = std::make_shared<reactor_solver>("solver_reactor_1");	
-		std::shared_ptr<reactor_solver> solver_reactor_2 = std::make_shared<reactor_solver>("solver_reactor_2");
-					
-		connection_net	netlist;	//Object for storing the connection information
+		std::shared_ptr<reactor_solver> solver_reactor_2 = std::make_shared<reactor_solver>("solver_reactor_2");					
+
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 
 		std::list<std::shared_ptr<GameObject>> draw_list;
 		std::list<std::shared_ptr<GameObject>> primeUpdate_list;

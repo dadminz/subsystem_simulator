@@ -82,7 +82,7 @@ void reactor_solver::init_thermodynamic_state_type_a()
 
 	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
 	
-	//assigning the working copy of the reactor thermodynamic_state back to the reactor:
+	//assigning the working copy of the reactor thermodynamic_state water back to the reactor:
 	(*(connected_reactor->thermodynamic_stateMap.at("water"))) = local_water;
 
 
@@ -108,62 +108,70 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	
 	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
 	
-	//assigning the working copy of the reactor thermodynamic_state back to the reactor:
+	//assigning the working copy of the reactor thermodynamic_state steam back to the reactor:
 	(*(connected_reactor->thermodynamic_stateMap.at("steam"))) = local_steam;
 	
 }
 
-void reactor_solver::solve_type_a(const double &dt)
+void reactor_solver::solve_type_a(const double &dts)
 {
+	//debug output:
 	std::cout << "==========================="<< std::endl;
 	std::cout << "calling solver: ("<< name <<") solve_type_a()"<< std::endl;	
 
 	//creating a working copy of the reactor thermodynamic_state water:
 	thermodynamic_state local_water = *(connected_reactor->thermodynamic_stateMap.at("water"));
-	thermodynamic_state local_steam = *(connected_reactor->thermodynamic_stateMap.at("steam"));	
-	
+	thermodynamic_state local_steam = *(connected_reactor->thermodynamic_stateMap.at("steam"));		
 
+	//debug output:
 	std::cout << "solving for local_water name: " << local_water.name << std::endl;
 	std::cout << "solving for local_steam name: " << local_steam.name << std::endl;
-
 	
 	//--------------
+	//init helper variables and parameters:
+	double tP = connected_reactor->thermal_power ; // [W]  	  thermal_power of the reactor
+	double rV = connected_reactor->V_vessel;	   // [m^3]	  Reactor vessel volume
+	double dT= 0;								   // [K]	  temperature change
+	double dVwater = 0;							   // [m^3/s] Water flow into the Reactor		
+	double dVsteam = 0;			   				   // [m^3/s] Steam flow from the Reactor
+	double dm = 0;								   // [kg]	  boiled off water mass
 	
-	double tP = connected_reactor->thermal_power ; // power of the reactor
-	double rV = connected_reactor->V_vessel;	   // Reactor vessel volume
-	double dT;									   // temperature change
-	double dVwater = 0;			// dP / Rpipe	   // Water flow into the Reactor					   	
-	double dm = 0;								   // boiled off water mass
 	
 	//Waterflow into the reactor
-	local_water.V = local_water.V + dVwater;	
+	local_water.V = local_water.V + dVwater;
+	//Steamflow from the reactor
+	local_steam.V = local_steam.V - dVsteam;	
 	
+	//checking the pressure dependent boiling point of water: (no critical implemented :( )
 	if(local_water.p >= magnus(local_water.T))
 	{
+		dm = 0;	//water cant boil off if the boiling point is not reached yet	
+		
 		//Heating the Reactor Water
-		dT = tP*dt * (1/(local_water.Cv*local_water.m));
+		dT = tP*dts * (1/(local_water.Cv*local_water.m));	//incomplete ! ... the steam should also be heated (volume ratio dependent heat split)
 		local_water.T = local_water.T + dT;	
+		
+	
 	}
 	else
 	{
-		dT = 0;
-		//Converting Water to Steam (Phase transition) (creating steam mass)
-		// Hv [J / mol ] Verdampfungsenthalpie 25°C
+		dT = 0;	//water cant heat up if the boiling point is reached
 		
-		dm = (tP*dt) / (local_steam.Hv/local_steam.M); 		// delta mass [ W * s ] / [(J /mol)*(mol/ kg)] 		
+		//Converting Water to Steam (Phase transition) (creating steam mass)
+		// Hv [J / mol ] Verdampfungsenthalpie 25°C (not temperature dependend yet)	
+		// M  [kg / mol ]	molar mass	
+		
+		dm = (tP*dts) / (local_steam.Hv/local_steam.M); 	// delta mass [ W * s ] / [(J /mol)*(mol/ kg)] 	= [ Ws * (kg / J) ] = [ kg ]	
 		local_water.m = local_water.m - dm;					//liquid water mass loss to boiling off into steam		
-		local_water.V = local_water.m / local_water.rho;	//adjusting the volume to the mass loss		
+		local_water.V = local_water.m / local_water.rho;	//adjusting the water volume to the mass loss		
 		local_steam.m = local_steam.m + dm;					//increasing the steam mass by boiled off water mass
 	}
 	
+	//steam Volume recalculation (V_vessel-V_water)
+	local_steam.V = rV - local_water.V;	
 	
-	std::cout << "dT: " << dT << "\twater-to-steam mass (dm): " << dm << std::endl;
-	
-	//instant heat transfer between water and steam vapor
-	local_steam.T = local_water.T;
-	
-	//steam Volume (vessel-water)
-	local_steam.V = rV - local_water.V;
+	//instant heat transfer between water and steam vapor (for testing)
+	local_steam.T = local_water.T;		//incomplete !!!
 	
 	//preassure calculation for steam:
 	local_steam.p = (local_steam.m/local_steam.M) * ( (local_steam.R*local_steam.T) / local_steam.V ); // p = m/M * (R*T)/V   ... Ideal Gas formular
@@ -178,6 +186,8 @@ void reactor_solver::solve_type_a(const double &dt)
 	(*(connected_reactor->thermodynamic_stateMap.at("water"))) = local_water;
 	(*(connected_reactor->thermodynamic_stateMap.at("steam"))) = local_steam;	
 	
+	//debug output:
+	std::cout << "dT: " << dT << "\twater-to-steam mass (dm): " << dm << std::endl;	
 	std::cout << "reactor thermal power [MW]: " << tP/1000000 << std::endl; 
 	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
 	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	

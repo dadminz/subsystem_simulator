@@ -7,9 +7,12 @@
 #include <fstream>
 #include <math.h>
 
+//######################################################################
+//nifty graphics functions
 
 void plot_line_grid(const cv::Mat &mat,const int &spacing_x, const int &spacing_y,const int &div_major, const cv::Scalar &color, const int &linesize)
 {
+	//function for plotting a grid for design help
 	cv::circle( mat, cv::Point( 100, 100 ), 8, cv::Scalar( 255, 0, 0 ), 1, 7 );
     cv::circle( mat, cv::Point( 200, 100 ), 8, cv::Scalar( 0, 255, 0 ), 1, 7 );
     cv::circle( mat, cv::Point( 300, 100 ), 8, cv::Scalar( 0, 0, 255 ), 1, 7 );
@@ -33,10 +36,12 @@ void plot_line_grid(const cv::Mat &mat,const int &spacing_x, const int &spacing_
 
 void plot_graph_xy(const cv::Mat &mat, std::list<cv::Point2f> &points, const cv::Scalar &color,const cv::Point2f &origin,const double &size_x,const double &size_y, const std::string &str1)
 {
+	//function for plotting a normed graph from a cv::point2f list
+	
 	double max_y=0, max_x=0;
-
 	cv::Point2f next,offset;
 	
+	//finding the maximum of both dimensions
 	for (std::list<cv::Point2f>::iterator it = points.begin(); it != points.end(); ++it)
 	{
 		if( it->y > max_y)
@@ -49,22 +54,26 @@ void plot_graph_xy(const cv::Mat &mat, std::list<cv::Point2f> &points, const cv:
 		}
 	}
 	
+	//norming the points and plotting them into the canvas/mat 
 	for (std::list<cv::Point2f>::iterator it = points.begin(); it != points.end(); ++it)
 	{
 		next = (*it);
 		next.x = (next.x/max_x)*size_x + origin.x; 
 		next.y = (-next.y/max_y)*size_y + origin.y; 
 				
-		cv::circle(mat,next,1,color,CV_FILLED,CV_FILLED,0);
+		cv::circle(mat,next,0.5,color,CV_FILLED,CV_FILLED,0);
 		
 		//std::cout <<"next: " << next << std::endl;
 	}
-	
+	//plotting the axis and graph title
 	cv::line(mat,origin,origin+cv::Point2f(size_x,0),cv::Scalar(150,150,150),2,1);
 	cv::line(mat,origin,origin-cv::Point2f(0,size_y),cv::Scalar(150,150,150),2,1);
 	offset = cv::Point2f(0,20);
-	cv::putText(mat, str1 , origin+offset, cv::FONT_HERSHEY_SIMPLEX, 0.75, color, 1);	
+	cv::putText(mat, str1 , origin+offset, cv::FONT_HERSHEY_SIMPLEX, 0.4, color, 1);	
 }
+
+//######################################################################
+//Thermodynamics helper functions
 
 double magnus(const double temperatur)
 {
