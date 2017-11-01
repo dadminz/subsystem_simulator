@@ -158,6 +158,9 @@ class reactor_vessel: public GameObject
 		int primeUpdate();
 		int update();
 		int draw();
+		int draw_back();
+		int draw_front();
+		int draw_dynamics();
 		int init_fluid_interfaces();
 		int index = 9001;
 		

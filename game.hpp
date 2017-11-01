@@ -18,6 +18,7 @@ class game
 		int place_reactor_components();
 		int connect_reactor_components();
 		int init_reactor_components();
+		int init_solver_modules();
 		int generate_object_lists_game();
 				
 		template <class T>
@@ -25,7 +26,8 @@ class game
 				
 		int primeUpdate_game();
 		int update_game();
-		int draw_game();
+		int draw_game(cv::Mat &mat);
+		int draw_game_plots(cv::Mat &mat);
 		int create_plot_points();
 		
 		//lists for the graph plotting ... needs more work !

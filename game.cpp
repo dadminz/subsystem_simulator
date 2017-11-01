@@ -16,6 +16,7 @@ game::game()
 	place_reactor_components();
 	connect_reactor_components();
 	init_reactor_components();
+	init_solver_modules();
 	generate_object_lists_game();
 }
 
@@ -28,9 +29,9 @@ int game::place_reactor_components()
 		
 	gameobjectsMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1"));	
 	gameobjectsMap.emplace("fPipe_1", std::make_shared<fluid_pipe>("fPipe_1"));
-	gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
-	gameobjectsMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2"));
-	gameobjectsMap.emplace("reactor_2", std::make_shared<reactor_vessel>("reactor_2"));	
+	//gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
+	//gameobjectsMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2"));
+	//gameobjectsMap.emplace("reactor_2", std::make_shared<reactor_vessel>("reactor_2"));	
 	
 	//-------------	
 	
@@ -69,8 +70,8 @@ int game::connect_reactor_components()
 	//connect solvers to reactors:	
 	solver_reactor_1->connected_reactor = GoCast<reactor_vessel>("reactor_1");
 	GoCast<reactor_vessel>("reactor_1")->connected_solver = solver_reactor_1;
-	solver_reactor_2->connected_reactor = GoCast<reactor_vessel>("reactor_2");
-	GoCast<reactor_vessel>("reactor_2")->connected_solver = solver_reactor_2;				
+	//solver_reactor_2->connected_reactor = GoCast<reactor_vessel>("reactor_2");
+	//GoCast<reactor_vessel>("reactor_2")->connected_solver = solver_reactor_2;				
 }
 
 int game::init_reactor_components()
@@ -79,6 +80,14 @@ int game::init_reactor_components()
 	std::cout << "init_reactor_components()"<< std::endl;
 	
 
+}
+
+int game::init_solver_modules()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "init_solver_modules()"<< std::endl;
+	
+	solver_reactor_1->init_thermodynamic_state_type_a();	
 }
 
 
@@ -124,19 +133,41 @@ int game::update_game()
 	for (std::list<std::shared_ptr<GameObject>>::iterator it = update_list.begin(); it != update_list.end(); ++it)
 	{
 		(*it)->update();
-	}		
+	}
+	
+	solver_reactor_1->solve_type_a(dt);
+	GameTime = GameTime + dt;		
 }
 
-int game::draw_game()
+int game::draw_game(cv::Mat &mat)
 {
 	std::cout << "==========================="<< std::endl;
 	std::cout << "calling game draw_game()"<< std::endl;	
 
+	mat.setTo( cv::Scalar(0,0,0) ); //clearing the old draw stuff
+	
+	draw_game_plots(mat);
+	
 	for (std::list<std::shared_ptr<GameObject>>::iterator it = draw_list.begin(); it != draw_list.end(); ++it)
 	{
 		(*it)->draw();
 	}		
 }
+
+int game::draw_game_plots(cv::Mat &mat)
+{
+	std::cout << "---------------------------"<< std::endl;
+	std::cout << "calling game draw_game_plots()"<< std::endl;	
+	
+	plot_graph_xy(mat,graph_pressure_steam,cv::Scalar(255,0,0),cv::Point2f(100,750),200,100,"steam_pressure");
+	plot_graph_xy(mat,graph_volume_steam,cv::Scalar(0,255,0),cv::Point2f(350,750),200,100,"steam_volume");	
+	plot_graph_xy(mat,graph_temperature_steam,cv::Scalar(0,0,255),cv::Point2f(600,750),200,100,"steam_temperature");
+		
+	plot_graph_xy(mat,graph_pressure_water,cv::Scalar(255,0,0),cv::Point2f(100,600),200,100,"water_pressure");
+	plot_graph_xy(mat,graph_volume_water,cv::Scalar(0,255,0),cv::Point2f(350,600),200,100,"water_volume");	
+	plot_graph_xy(mat,graph_temperature_water,cv::Scalar(0,0,255),cv::Point2f(600,600),200,100,"water_temperature");		
+}
+
 int game::create_plot_points()
 {
 		graph_pressure_steam.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("steam")->p)) ;

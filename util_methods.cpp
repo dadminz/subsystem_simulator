@@ -13,9 +13,9 @@
 void plot_line_grid(const cv::Mat &mat,const int &spacing_x, const int &spacing_y,const int &div_major, const cv::Scalar &color, const int &linesize)
 {
 	//function for plotting a grid for design help
-	cv::circle( mat, cv::Point( 100, 100 ), 8, cv::Scalar( 255, 0, 0 ), 1, 7 );
-    cv::circle( mat, cv::Point( 200, 100 ), 8, cv::Scalar( 0, 255, 0 ), 1, 7 );
-    cv::circle( mat, cv::Point( 300, 100 ), 8, cv::Scalar( 0, 0, 255 ), 1, 7 );
+	//cv::circle( mat, cv::Point( 100, 100 ), 8, cv::Scalar( 255, 0, 0 ), 1, 7 );
+    //cv::circle( mat, cv::Point( 200, 100 ), 8, cv::Scalar( 0, 255, 0 ), 1, 7 );
+    //cv::circle( mat, cv::Point( 300, 100 ), 8, cv::Scalar( 0, 0, 255 ), 1, 7 );
 	
 	for(int iy = 0 ; iy <= (int)mat.rows ; iy = iy + spacing_y)
 	{

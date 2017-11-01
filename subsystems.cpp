@@ -309,8 +309,29 @@ int reactor_vessel::update()
 int reactor_vessel::draw()
 {
 	std::cout << "calling reactor_vessel (" <<name<< ") draw()"<< std::endl;
+	draw_back();
+	draw_front();
+	draw_dynamics();
 	return 0;		
 }
+
+int reactor_vessel::draw_back()
+{
+	//function for drawing the back graphics of the reactor:
+	return 0;
+}
+
+int reactor_vessel::draw_front()
+{
+	//function for drawing the front graphics of the reactor:
+	return 0;
+}
+
+int reactor_vessel::draw_dynamics()
+{	
+	//function for drawing the dynamic graphics of the reactor:
+	return 0;
+}	
 
 int reactor_vessel::init_fluid_interfaces()
 {
