@@ -35,7 +35,7 @@ class GameObject
 		std::cout << "Base Class GameObject update() called" << std::endl;		
 		return 0;
 	}
-	virtual int draw()
+	virtual int draw(cv::Mat &mat)
 	{
 		std::cout << "Base Class GameObject draw() called" << std::endl;		
 		return 0;
@@ -125,7 +125,7 @@ class fluid_pipe: public GameObject
 		fluid_pipe(const std::string &str1); //Constructor
 		int primeUpdate();
 		int update();
-		int draw();
+		int draw(cv::Mat &mat);
 		int init_fluid_interfaces();
 		
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};		
@@ -140,7 +140,7 @@ class fluid_pump: public GameObject
 		fluid_pump(const std::string &str1); //Constructor
 		int primeUpdate();
 		int update();
-		int draw();
+		int draw(cv::Mat &mat);
 		int init_fluid_interfaces();
 		
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
@@ -157,10 +157,10 @@ class reactor_vessel: public GameObject
 		reactor_vessel(const std::string &str1);	//Constructor
 		int primeUpdate();
 		int update();
-		int draw();
-		int draw_back();
-		int draw_front();
-		int draw_dynamics();
+		int draw(cv::Mat &mat);
+		int draw_back(cv::Mat &mat);
+		int draw_front(cv::Mat &mat);
+		int draw_dynamics(cv::Mat &mat);
 		int init_fluid_interfaces();
 		int index = 9001;
 		

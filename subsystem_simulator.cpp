@@ -30,7 +30,7 @@ void my_programm()
 	int grid_div_x = 10;
 	int grid_div_y = 10;
 	int grid_div_major= 100;
-	plot_line_grid(canvas,grid_div_x,grid_div_y,grid_div_major,cv::Scalar(30,30,30),1);
+	//plot_line_grid(canvas,grid_div_x,grid_div_y,grid_div_major,cv::Scalar(30,30,30),1);
 	
 	std::string text = "Reactor Control System v0.1";    
     cv::putText(canvas, text , cv::Point2f(5,15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(90,255,90), 1);
@@ -46,7 +46,7 @@ void my_programm()
 	std::cout << std::endl << std::endl << std::endl;
 	std::cout << "Starting Sim Loop:" << std::endl;
 	
-	Game.draw_game(output);
+	Game.draw_game(layer);
 	
 	//Game sim loop:
 	for(int i = 0 ; i< 4000 ; i++)
@@ -54,8 +54,9 @@ void my_programm()
 		std::cout <<std::endl  <<"GameTime[s]: " << Game.GameTime << std::endl;
 		if(i%10 == 0)
 		{
-			Game.draw_game(output);						
-			cv::imshow("Display Output", output+canvas);       
+			
+			Game.draw_game(layer);												
+			cv::imshow("Display Output", canvas + layer);       
 			cv::waitKey(1);	
 		}		
 		
@@ -65,7 +66,7 @@ void my_programm()
 	}
 	
  	//---------------------    
-	cv::imshow("Display Output", output+canvas);       
+	cv::imshow("Display Output", canvas + layer);       
     cv::waitKey(0);
 }
 

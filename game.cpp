@@ -139,7 +139,7 @@ int game::update_game()
 		(*it)->update();
 	}
 	
-	solver_reactor_1->solve_type_a(dt);
+	solver_reactor_1->solve_type_a(dt);		//needs work!
 	GameTime = GameTime + dt;
 	return 0;		
 }
@@ -150,13 +150,15 @@ int game::draw_game(cv::Mat &mat)
 	std::cout << "calling game draw_game()"<< std::endl;	
 
 	mat.setTo( cv::Scalar(0,0,0) ); //clearing the old draw stuff
+	plot_line_grid(mat,10,10,100,cv::Scalar(30,30,30),1);
 	
 	draw_game_plots(mat);
 	draw_game_stats(mat);
+
 	
 	for (std::list<std::shared_ptr<GameObject>>::iterator it = draw_list.begin(); it != draw_list.end(); ++it)
 	{
-		(*it)->draw();
+		(*it)->draw(mat);
 	}
 	
 	return 0;		

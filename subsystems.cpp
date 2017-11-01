@@ -150,8 +150,7 @@ void reactor_solver::solve_type_a(const double &dts)
 		//Heating the Reactor Water
 		dT = tP*dts * (1/(local_water.Cv*local_water.m));	//incomplete ! ... the steam should also be heated (volume ratio dependent heat split)
 		local_water.T = local_water.T + dT;	
-		
-	
+			
 	}
 	else
 	{
@@ -221,7 +220,7 @@ int fluid_pipe::update()
 	return 0;		
 }
 
-int fluid_pipe::draw()
+int fluid_pipe::draw(cv::Mat &mat)
 {
 	std::cout << "calling fluid_pipe (" <<name<< ") draw()"<< std::endl;
 	return 0;		
@@ -262,7 +261,7 @@ int fluid_pump::update()
 	return 0;		
 }
 
-int fluid_pump::draw()
+int fluid_pump::draw(cv::Mat &mat)
 {
 	std::cout << "calling fluid_pump (" <<name<< ") draw()"<< std::endl;
 	return 0;		
@@ -306,28 +305,28 @@ int reactor_vessel::update()
 	return 0;	
 }
 
-int reactor_vessel::draw()
+int reactor_vessel::draw(cv::Mat &mat)
 {
 	std::cout << "calling reactor_vessel (" <<name<< ") draw()"<< std::endl;
-	draw_back();
-	draw_front();
-	draw_dynamics();
+	draw_back(mat);
+	draw_front(mat);
+	draw_dynamics(mat);
 	return 0;		
 }
 
-int reactor_vessel::draw_back()
+int reactor_vessel::draw_back(cv::Mat &mat)
 {
 	//function for drawing the back graphics of the reactor:
 	return 0;
 }
 
-int reactor_vessel::draw_front()
+int reactor_vessel::draw_front(cv::Mat &mat)
 {
 	//function for drawing the front graphics of the reactor:
 	return 0;
 }
 
-int reactor_vessel::draw_dynamics()
+int reactor_vessel::draw_dynamics(cv::Mat &mat)
 {	
 	//function for drawing the dynamic graphics of the reactor:
 	return 0;
