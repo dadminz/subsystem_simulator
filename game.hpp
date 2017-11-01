@@ -28,6 +28,7 @@ class game
 		int update_game();
 		int draw_game(cv::Mat &mat);
 		int draw_game_plots(cv::Mat &mat);
+		int draw_game_stats(cv::Mat &mat);
 		int create_plot_points();
 		
 		//lists for the graph plotting ... needs more work !

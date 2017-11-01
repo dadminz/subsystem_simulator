@@ -72,6 +72,48 @@ void plot_graph_xy(const cv::Mat &mat, std::list<cv::Point2f> &points, const cv:
 	cv::putText(mat, str1 , origin+offset, cv::FONT_HERSHEY_SIMPLEX, 0.4, color, 1);	
 }
 
+void plot_stat_box(const cv::Mat &mat, const cv::Scalar &colorbox,const cv::Scalar &colortex,const cv::Point2f &origin, const double &size_x,const double &size_y, const std::string &title1)
+{
+	//function for plotting a box with title
+	cv::Point2f TextOffset;
+	cv::Point2f BoxOffset;
+	
+	TextOffset = cv::Point2f(10,20);
+	BoxOffset.x = size_x;
+	BoxOffset.y = size_y;	
+	
+	cv::rectangle(mat,origin, origin+BoxOffset, colorbox, 2, 1);
+	
+	cv::putText(mat, title1 , origin+TextOffset, cv::FONT_HERSHEY_SIMPLEX, 0.4, colortex, 1);	
+}
+
+void plot_stats_list(const cv::Mat &mat, const cv::Scalar &colorname,const cv::Scalar &colorvar, cv::Point2f origin, std::list<std::string> variable_name, std::list<std::string> variable)
+{
+	//function for plotting a list with stats
+	cv::Point2f TextOffsetName;
+	cv::Point2f TextOffsetVar;
+	cv::Point2f offset_y;
+	
+	offset_y = cv::Point2f(0,25);	
+	
+	TextOffsetName = cv::Point2f(0,20);
+	TextOffsetVar  = cv::Point2f(200,20);		
+	
+	std::list<std::string>::iterator it_var = variable.begin();
+	
+	for (std::list<std::string>::iterator it = variable_name.begin(); it != variable_name.end(); ++it)
+	{
+		cv::putText(mat, (*it) , origin+TextOffsetName, cv::FONT_HERSHEY_SIMPLEX, 0.4, colorname, 1);
+		cv::putText(mat, (*it_var) , origin+TextOffsetVar, cv::FONT_HERSHEY_SIMPLEX, 0.4, colorvar, 1);
+		
+		origin = origin + offset_y;
+		it_var++;		
+	}
+	
+	
+	//cv::putText(mat, variable_name , origin+TextOffset, cv::FONT_HERSHEY_SIMPLEX, 0.4, colortex, 1);	
+}
+
 //######################################################################
 //Thermodynamics helper functions
 
