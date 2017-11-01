@@ -192,12 +192,28 @@ int game::draw_game_stats(cv::Mat &mat)
 	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermodynamic_stateMap.at("water")->T )  );
 	
 	variable_name.push_back("Water Volume [m^3]:");
-	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermodynamic_stateMap.at("water")->V )  );
+	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermodynamic_stateMap.at("water")->V )  );	
 	
-	variable_name.push_back("Water Preassure [MPa]:");
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,255,90),cv::Point2f(810,525),variable_name,variable);
+	
+	
+	variable_name.clear();
+	variable.clear();
+	
+	variable_name.push_back("Steam Volume [m^3]:");
+	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermodynamic_stateMap.at("steam")->V )  );	
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(255,90,90),cv::Point2f(810,575),variable_name,variable);
+	
+	
+	variable_name.clear();
+	variable.clear();
+	
+	variable_name.push_back("Thermal Power [MW]:");
+	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermal_power/1000000 )  );
+	
+	variable_name.push_back("Vessel Preassure [MPa]:");
 	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermodynamic_stateMap.at("water")->p/1000000 )  );	
-	
-	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,255,90),cv::Point2f(810,530),variable_name,variable);
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,90,255),cv::Point2f(810,625),variable_name,variable);
 	
 	return 0;
 }

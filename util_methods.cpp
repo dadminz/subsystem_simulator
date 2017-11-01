@@ -24,7 +24,8 @@ void plot_line_grid(const cv::Mat &mat,const int &spacing_x, const int &spacing_
 
 			if( (ix%div_major == 0) && (iy%div_major == 0) )
 			{
-				cv::circle(mat, cv::Point(ix,iy), linesize*2, color*2, CV_FILLED, CV_FILLED );				
+				//cv::circle(mat, cv::Point(ix,iy), linesize*2, color*2, CV_FILLED, CV_FILLED );
+				cv::circle(mat, cv::Point(ix,iy), linesize, color, CV_FILLED, CV_FILLED );				
 			}
 			else
 			{
@@ -97,7 +98,7 @@ void plot_stats_list(const cv::Mat &mat, const cv::Scalar &colorname,const cv::S
 	offset_y = cv::Point2f(0,25);	
 	
 	TextOffsetName = cv::Point2f(0,20);
-	TextOffsetVar  = cv::Point2f(200,20);		
+	TextOffsetVar  = cv::Point2f(175,20);		
 	
 	std::list<std::string>::iterator it_var = variable.begin();
 	
