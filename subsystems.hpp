@@ -121,6 +121,8 @@ class fluid_pump_solver
 	
 	public:
 		fluid_pump_solver(const std::string &str1);
+		void solve_pump_a(const double &dts);
+		
 		std::string name = "fluid_pump_Solver_XXX";
 		int id=20;				
 		std::shared_ptr<fluid_pump> connected_pump;
@@ -210,7 +212,7 @@ class reactor_vessel: public GameObject
 		cv::Point2f origin = cv::Point2f(0,0);
 
 		
-		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
+		double thermal_power = 0*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		

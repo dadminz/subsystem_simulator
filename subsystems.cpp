@@ -204,6 +204,14 @@ fluid_pump_solver::fluid_pump_solver(const std::string &str1)
 	std::cout << "name of the fluid_pump_solver: " << str1 << std::endl;	
 }
 
+void fluid_pump_solver::solve_pump_a(const double &dts)
+{
+	//debug output:
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling solver: ("<< name <<") solve_pump_a()"<< std::endl;	
+}
+
+
 //######################################################################
 //######################################################################
 //######################################################################
@@ -248,8 +256,8 @@ int fluid_pipe::init_fluid_interfaces()
 	std::cout << "calling fluid_pipe (" <<name<< ") init_fluid_interfaces()"<< std::endl;	
 	//fluid_interfaceMap.emplace("<interface_name>", std::make_shared<fluid_interface>("<interface_name>"));
 	
-	fluid_interfaceMap.emplace("pipe_port_1", std::make_shared<fluid_interface>("pipe_port_1"));
-	fluid_interfaceMap.emplace("pipe_port_2", std::make_shared<fluid_interface>("pipe_port_2"));
+	fluid_interfaceMap.emplace("pipe_port_1", std::make_shared<fluid_interface>(name + ".pipe_port_1"));
+	fluid_interfaceMap.emplace("pipe_port_2", std::make_shared<fluid_interface>(name + ".pipe_port_2"));
 		
 	return 0;
 }
@@ -296,8 +304,8 @@ int fluid_pump::init_fluid_interfaces()
 	std::cout << "calling fluid_pump (" <<name<< ") init_fluid_interfaces()"<< std::endl;	
 	//fluid_interfaceMap.emplace("<interface_name>", std::make_shared<fluid_interface>("<interface_name>"));
 	
-	fluid_interfaceMap.emplace("pump_intake", std::make_shared<fluid_interface>("pump_intake"));
-	fluid_interfaceMap.emplace("pump_outlet", std::make_shared<fluid_interface>("pump_outlet"));
+	fluid_interfaceMap.emplace("pump_intake", std::make_shared<fluid_interface>(name + ".pump_intake"));
+	fluid_interfaceMap.emplace("pump_outlet", std::make_shared<fluid_interface>(name + ".pump_outlet"));
 		
 	return 0;
 }
@@ -379,8 +387,8 @@ int fluid_tank::init_fluid_interfaces()
 	
 	//fluid_interfaceMap.emplace("<interface_name>", std::make_shared<fluid_interface>("<interface_name>"));
 	
-	fluid_interfaceMap.emplace("liquid_port_1", std::make_shared<fluid_interface>("liquid_port_1"));	
-	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>("liquid_port_2"));
+	fluid_interfaceMap.emplace("liquid_port_1", std::make_shared<fluid_interface>(name + ".liquid_port_1"));	
+	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>(name + ".liquid_port_2"));
 	
 	return 0;
 }
@@ -501,11 +509,11 @@ int reactor_vessel::init_fluid_interfaces()
 	
 	//fluid_interfaceMap.emplace("<interface_name>", std::make_shared<fluid_interface>("<interface_name>"));
 	
-	fluid_interfaceMap.emplace("liquid_port_1", std::make_shared<fluid_interface>("liquid_port_1"));	
-	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>("liquid_port_2"));
+	fluid_interfaceMap.emplace("liquid_port_1", std::make_shared<fluid_interface>(name + ".liquid_port_1"));	
+	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>(name + ".liquid_port_2"));
 
-	fluid_interfaceMap.emplace("gas_port_1", std::make_shared<fluid_interface>("gas_port_1"));
-	fluid_interfaceMap.emplace("gas_port_2", std::make_shared<fluid_interface>("gas_port_2"));	
+	fluid_interfaceMap.emplace("gas_port_1", std::make_shared<fluid_interface>(name + ".gas_port_1"));
+	fluid_interfaceMap.emplace("gas_port_2", std::make_shared<fluid_interface>(name + ".gas_port_2"));	
 	
 	return 0;
 }
