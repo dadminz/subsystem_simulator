@@ -92,9 +92,13 @@ class fluid_interface: public Interface
 	private:
 	
 	public:
-		fluid_interface(const std::string &str1);	//Constructor
+		fluid_interface(const std::string &str1 );	//Constructor
+		
 		int index = 666;		
-		std::shared_ptr<fluid_interface> target;
+		std::shared_ptr<fluid_interface> target;		
+		std::shared_ptr<thermodynamic_state> hostTDS;
+		
+		
 };
 
 //######################################################################
@@ -212,7 +216,7 @@ class reactor_vessel: public GameObject
 		cv::Point2f origin = cv::Point2f(0,0);
 
 		
-		double thermal_power = 0*pow(10,6);	//1000 MW ... crispy ...
+		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		

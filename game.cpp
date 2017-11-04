@@ -17,6 +17,7 @@ game::game()
 	connect_reactor_components();
 	init_reactor_components();
 	init_solver_modules();
+	init_component_fluid_interfaces();
 	generate_object_lists_game();
 }
 
@@ -48,11 +49,15 @@ int game::connect_reactor_components()
 	
 	//-------------
 	//connect fluid_interfaces:			
-	GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"];
+	GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"];	
+	
 	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->target = GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"];
+	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->hostTDS = GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap["water"];	
 
-	GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_intake"]->target = GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"];
+	GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_intake"]->target = GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"];	
 	GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"]->target = GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_intake"];
+
+	
 	
 	std::cout << "interface test: "  << GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"]->target->name << std::endl;
 	std::cout << "interface test: "  << GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->target->name << std::endl;
@@ -69,6 +74,7 @@ int game::connect_reactor_components()
 	solver_pump_1->connected_pump = GoCast<fluid_pump>("fPump_1");
 	GoCast<fluid_pump>("fPump_1")->connected_solver = solver_pump_1;
 	
+	std::cout << "solver_pump_1 connected name:" << solver_pump_1->connected_pump->name << std::endl;	
 
 	return 0;			
 }
@@ -86,11 +92,21 @@ int game::init_solver_modules()
 	std::cout << "==========================="<< std::endl;
 	std::cout << "init_solver_modules()"<< std::endl;
 	
-	solver_reactor_1->init_thermodynamic_state_type_a();
+	solver_reactor_1->init_thermodynamic_state_type_a();	
+	
 	return 0;	
 }
 
-
+int game::init_component_fluid_interfaces()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "init_component_interfaces()"<< std::endl;	
+	
+	//giving the TDS pointer of the interfaces a target TDS: 
+	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->hostTDS = GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap["water"];
+	GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"]->hostTDS = GoCast<fluid_tank>("fluid_tank_1")->thermodynamic_stateMap["water"];
+	
+}
 //######################################################################
 
 
@@ -137,8 +153,9 @@ int game::update_game()
 		(*it)->update();
 	}
 	
-	solver_reactor_1->solve_type_a(dt);		//needs work!
 	solver_pump_1->solve_pump_a(dt);
+	solver_reactor_1->solve_type_a(dt);		//needs work!
+	
 	GameTime = GameTime + dt;
 	return 0;		
 }

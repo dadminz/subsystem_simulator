@@ -19,6 +19,7 @@ class game
 		int connect_reactor_components();
 		int init_reactor_components();
 		int init_solver_modules();
+		int init_component_fluid_interfaces();
 		int generate_object_lists_game();
 				
 		template <class T>

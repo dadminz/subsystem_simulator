@@ -49,14 +49,14 @@ void my_programm()
 	Game.draw_game(layer);
 	
 	//Game sim loop:
-	for(int i = 0 ; i< 0 ; i++)
+	for(int i = 0 ; i< 5000 ; i++)
 	{		
 		std::cout <<std::endl  <<"GameTime[s]: " << Game.GameTime << std::endl;
 		if(i%10 == 0)
 		{
 			
 			Game.draw_game(layer);												
-			cv::imshow("Display Output", canvas + layer);       
+			cv::imshow("Display Output", canvas + layer);
 			cv::waitKey(1);	
 		}		
 		

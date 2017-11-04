@@ -32,9 +32,12 @@ thermodynamic_state::thermodynamic_state(const std::string &str1)
 fluid_interface::fluid_interface(const std::string &str1)
 {
 	std::cout << "calling constructor fluid_interface()"<< std::endl;
-	name = str1;
+	name = str1;	
 	std::cout << "name of the fluid_interface: " << str1 << std::endl;		
 }
+
+
+
 
 //######################################################################
 //######################################################################
@@ -61,8 +64,8 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	std::cout << "calling solver: ("<< name <<") init_thermodynamic_state_type_a()"<< std::endl;
 	
 	//create the thermo dynamic states for the reactor
-	connected_reactor->thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>("water"));
-	connected_reactor->thermodynamic_stateMap.emplace("steam", std::make_shared<thermodynamic_state>("steam"));
+	connected_reactor->thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>(connected_reactor->name + ".water"));
+	connected_reactor->thermodynamic_stateMap.emplace("steam", std::make_shared<thermodynamic_state>(connected_reactor->name + ".steam"));
 	
 	//creating a working copy of the reactor thermodynamic_state water:
 	thermodynamic_state local_water = *(connected_reactor->thermodynamic_stateMap.at("water"));	
@@ -208,7 +211,34 @@ void fluid_pump_solver::solve_pump_a(const double &dts)
 {
 	//debug output:
 	std::cout << "==========================="<< std::endl;
-	std::cout << "calling solver: ("<< name <<") solve_pump_a()"<< std::endl;	
+	std::cout << "calling solver: ("<< name <<") solve_pump_a()"<< std::endl;
+	
+	//creating a working copy of the intake/outlet target thermodynamic_state water:
+	thermodynamic_state local_intake = *(connected_pump->fluid_interfaceMap["pump_intake"]->target->hostTDS );	
+	thermodynamic_state local_outlet = *(connected_pump->fluid_interfaceMap["pump_outlet"]->target->hostTDS );
+	
+	std::cout << "local_intake TDS name: " << local_intake.name << std::endl;
+	std::cout << "local_outlet TDS name: " << local_outlet.name << std::endl;
+	
+	double pump_rate = 0.2;	// [m^3/s] Volume Flow
+	
+	std::cout << "local_intake TDS Temp: " <<  local_intake.T << std::endl;
+	std::cout << "local_outlet TDS Temp: " <<  local_outlet.T << std::endl;
+	
+	if(local_outlet.V < 80 && local_intake.V > pump_rate*dts )
+	{
+	
+	local_intake.V = local_intake.V - pump_rate*dts;
+	local_intake.m = local_intake.V * local_intake.rho;
+	
+	local_outlet.V = local_outlet.V + pump_rate*dts;
+	local_outlet.m = local_outlet.V * local_outlet.rho;
+	
+	}
+	
+	//writing the working copy of intake/outlet back to the target thermodynamic_state water:
+	 *(connected_pump->fluid_interfaceMap["pump_intake"]->target->hostTDS ) = local_intake;
+	 *(connected_pump->fluid_interfaceMap["pump_outlet"]->target->hostTDS ) = local_outlet;	
 }
 
 
@@ -246,7 +276,7 @@ int fluid_pipe::draw(cv::Mat &mat)
 	
 	cv::Scalar color1 = cv::Scalar(100,100,100);
 	
-	cv::line(mat,origin,origin+cv::Point2f(125,0),color1,2,1);	
+	cv::line(mat,origin,origin+cv::Point2f(125,0),color1,2,1);
 
 	return 0;		
 }
@@ -294,7 +324,7 @@ int fluid_pump::draw(cv::Mat &mat)
 	cv::Scalar color1 = cv::Scalar(100,100,100);	
 
 	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 25, color1, 2, CV_FILLED );
-	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 8, color1, CV_FILLED, CV_FILLED );
+	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 8, color1, CV_FILLED, CV_FILLED );	
 	
 	return 0;		
 }
@@ -399,7 +429,7 @@ void fluid_tank::init_thermodynamic_state_water()
 	std::cout << "calling fluid_tank: ("<< name <<") init_thermodynamic_state_water()"<< std::endl;
 	
 	//create the thermo dynamic states for the reactor
-	thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>("water"));
+	thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>(name + ".water"));
 	
 	
 	//creating a working copy of the reactor thermodynamic_state water:
