@@ -122,11 +122,12 @@ class fluid_pipe: public GameObject
 	private:
 	
 	public:
-		fluid_pipe(const std::string &str1); //Constructor
+		fluid_pipe(const std::string &str1, cv::Point2f pt1); //Constructor
 		int primeUpdate();
 		int update();
 		int draw(cv::Mat &mat);
 		int init_fluid_interfaces();
+		cv::Point2f origin = cv::Point2f(0,0);
 		
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};		
 };
@@ -137,11 +138,12 @@ class fluid_pump: public GameObject
 	private:
 	
 	public:
-		fluid_pump(const std::string &str1); //Constructor
+		fluid_pump(const std::string &str1, cv::Point2f pt1); //Constructor
 		int primeUpdate();
 		int update();
 		int draw(cv::Mat &mat);
 		int init_fluid_interfaces();
+		cv::Point2f origin = cv::Point2f(0,0);
 		
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 		

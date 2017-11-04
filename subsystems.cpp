@@ -199,11 +199,12 @@ void reactor_solver::solve_type_a(const double &dts)
 //Component Classes:
 //######################################################################
 //Constructor of fluid_pipe
-fluid_pipe::fluid_pipe(const std::string &str1)
+fluid_pipe::fluid_pipe(const std::string &str1, cv::Point2f pt1)
 {
 	std::cout << "---------------------------"<< std::endl;
 	std::cout << "calling constructor fluid_pipe()"<< std::endl;
-	name = str1;	
+	name = str1;
+	origin = pt1;		
 	std::cout << "name of the fluid_pipe: " << str1 << std::endl;
 	init_fluid_interfaces();			
 }
@@ -224,7 +225,6 @@ int fluid_pipe::draw(cv::Mat &mat)
 {
 	std::cout << "calling fluid_pipe (" <<name<< ") draw()"<< std::endl;
 	
-	cv::Point2f origin = cv::Point2f(300,350);
 	cv::Scalar color1 = cv::Scalar(100,100,100);
 	
 	cv::line(mat,origin,origin+cv::Point2f(125,0),color1,2,1);	
@@ -246,11 +246,12 @@ int fluid_pipe::init_fluid_interfaces()
 
 //######################################################################
 //Constructor of fluid_pump
-fluid_pump::fluid_pump(const std::string &str1)
+fluid_pump::fluid_pump(const std::string &str1, cv::Point2f pt1)
 {
 	std::cout << "---------------------------"<< std::endl;
 	std::cout << "calling constructor fluid_pump()"<< std::endl;
-	name = str1;	
+	name = str1;
+	origin = pt1;		
 	std::cout << "name of the fluid_pump: " << str1 << std::endl;
 	init_fluid_interfaces();			
 }
@@ -271,9 +272,7 @@ int fluid_pump::draw(cv::Mat &mat)
 {
 	std::cout << "calling fluid_pump (" <<name<< ") draw()"<< std::endl;
 	
-	cv::Point2f origin = cv::Point2f(400,350);
-	cv::Scalar color1 = cv::Scalar(100,100,100);
-	
+	cv::Scalar color1 = cv::Scalar(100,100,100);	
 
 	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 25, color1, 2, CV_FILLED );
 	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 8, color1, CV_FILLED, CV_FILLED );
