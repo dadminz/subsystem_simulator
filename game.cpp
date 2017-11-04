@@ -27,9 +27,9 @@ int game::place_reactor_components()
 		
 	//-------------
 		
-	gameobjectsMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1"));	
+	gameobjectsMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1",cv::Point2f(100,100)) );	
 	gameobjectsMap.emplace("fPipe_1", std::make_shared<fluid_pipe>("fPipe_1"));
-	//gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
+	gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1"));
 	//gameobjectsMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2"));
 	//gameobjectsMap.emplace("reactor_2", std::make_shared<reactor_vessel>("reactor_2"));	
 	

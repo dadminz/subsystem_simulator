@@ -154,7 +154,7 @@ class reactor_vessel: public GameObject
 	private:	
 	
 	public:
-		reactor_vessel(const std::string &str1);	//Constructor
+		reactor_vessel(const std::string &str1, cv::Point2f pt1);	//Constructor
 		int primeUpdate();
 		int update();
 		int draw(cv::Mat &mat);
@@ -163,6 +163,7 @@ class reactor_vessel: public GameObject
 		int draw_dynamics(cv::Mat &mat);
 		int init_fluid_interfaces();
 		int index = 9001;
+		cv::Point2f origin = cv::Point2f(0,0);
 		
 		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
 

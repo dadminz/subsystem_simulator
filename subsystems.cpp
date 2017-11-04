@@ -223,6 +223,12 @@ int fluid_pipe::update()
 int fluid_pipe::draw(cv::Mat &mat)
 {
 	std::cout << "calling fluid_pipe (" <<name<< ") draw()"<< std::endl;
+	
+	cv::Point2f origin = cv::Point2f(300,350);
+	cv::Scalar color1 = cv::Scalar(100,100,100);
+	
+	cv::line(mat,origin,origin+cv::Point2f(125,0),color1,2,1);	
+
 	return 0;		
 }
 
@@ -264,6 +270,14 @@ int fluid_pump::update()
 int fluid_pump::draw(cv::Mat &mat)
 {
 	std::cout << "calling fluid_pump (" <<name<< ") draw()"<< std::endl;
+	
+	cv::Point2f origin = cv::Point2f(400,350);
+	cv::Scalar color1 = cv::Scalar(100,100,100);
+	
+
+	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 25, color1, 2, CV_FILLED );
+	cv::circle( mat, origin+cv::Point2f( 25, 25 ), 8, color1, CV_FILLED, CV_FILLED );
+	
 	return 0;		
 }
 
@@ -280,11 +294,12 @@ int fluid_pump::init_fluid_interfaces()
 
 //######################################################################
 //Constructor of reactor_vessel
-reactor_vessel::reactor_vessel(const std::string &str1)
+reactor_vessel::reactor_vessel(const std::string &str1, cv::Point2f pt1)
 {
 	std::cout << "---------------------------"<< std::endl;
 	std::cout << "calling constructor reactor_vessel()"<< std::endl;	
-	name = str1;	
+	name = str1;
+	origin = pt1;	
 	std::cout << "name of the reactor: " << str1 << std::endl;
 	init_fluid_interfaces();
 }
@@ -309,26 +324,49 @@ int reactor_vessel::draw(cv::Mat &mat)
 {
 	std::cout << "calling reactor_vessel (" <<name<< ") draw()"<< std::endl;
 	draw_back(mat);
-	draw_front(mat);
 	draw_dynamics(mat);
+	draw_front(mat);
 	return 0;		
 }
 
 int reactor_vessel::draw_back(cv::Mat &mat)
 {
 	//function for drawing the back graphics of the reactor:
+	cv::Scalar color1 = cv::Scalar(100,100,100);
+	
+	cv::rectangle(mat,origin, origin+cv::Point2f(200,300),color1 , 4, 1);
+	
 	return 0;
 }
 
 int reactor_vessel::draw_front(cv::Mat &mat)
 {
 	//function for drawing the front graphics of the reactor:
+	
+	cv::Scalar color1 = cv::Scalar(25,100,25);
+	
+	//Fuel Rods:
+	cv::rectangle(mat,origin+cv::Point2f(30,100), origin+cv::Point2f(50,200),color1 , CV_FILLED, 1);
+	cv::rectangle(mat,origin+cv::Point2f(60,100), origin+cv::Point2f(80,200),color1 , CV_FILLED, 1);
+	cv::rectangle(mat,origin+cv::Point2f(90,100), origin+cv::Point2f(110,200),color1 , CV_FILLED, 1);
+	cv::rectangle(mat,origin+cv::Point2f(120,100), origin+cv::Point2f(140,200),color1 , CV_FILLED, 1);
+	cv::rectangle(mat,origin+cv::Point2f(150,100), origin+cv::Point2f(170,200),color1 , CV_FILLED, 1);
+	
 	return 0;
 }
 
 int reactor_vessel::draw_dynamics(cv::Mat &mat)
 {	
 	//function for drawing the dynamic graphics of the reactor:
+	cv::Scalar color1 = cv::Scalar(100,0,0);
+	float waterlvl; //[0...1]
+	float watervolume = thermodynamic_stateMap["water"]->V;
+	float vesselvolume = V_vessel;
+	
+	waterlvl = watervolume / vesselvolume;
+	
+	cv::rectangle(mat,origin+cv::Point2f(0+3,300-300*waterlvl-3), origin+cv::Point2f(200-3,300-3),color1 , CV_FILLED, 1);
+	
 	return 0;
 }	
 
