@@ -71,7 +71,7 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	local_water.state_type = "fluid";				// "solid" "fluid" "gas"
 	local_water.p = 101325.0;						// [N / m^2 ] 	pressure
 	local_water.rho = 1000;							// [kg / m^3 ]  density (water liquid 1000)
-	local_water.V = 75.0;							// [m^3]		volume	
+	local_water.V = 50.0;							// [m^3]		volume	
 	local_water.T = 300.0;							// [K]			temperature
 	local_water.m = local_water.V*local_water.rho;	// [kg]			mass
 	local_water.M = 0.0160428;						// [kg / mol ]	molar mass
@@ -94,7 +94,7 @@ void reactor_solver::init_thermodynamic_state_type_a()
 	local_steam.state_type = "gas";					// "solid" "fluid" "gas"
 	local_steam.p = 101325.0;						// [N / m^2 ] 	pressure
 	local_steam.rho = local_steam.m/local_steam.V;	// [kg / m^3 ]  density (water liquid 1000)
-	local_steam.V = 25.0;							// [m^3]		volume	
+	local_steam.V = 50.0;							// [m^3]		volume	
 	local_steam.T = 300.0;							// [K]			temperature
 	local_steam.m = 25.0;							// [kg]			mass
 	local_steam.M = 0.0160428;						// [kg / mol ]	molar mass
@@ -289,6 +289,121 @@ int fluid_pump::init_fluid_interfaces()
 	fluid_interfaceMap.emplace("pump_outlet", std::make_shared<fluid_interface>("pump_outlet"));
 		
 	return 0;
+}
+
+//######################################################################
+//Constructor of fluid_tank
+
+fluid_tank::fluid_tank(const std::string &str1, cv::Point2f pt1)
+{
+	std::cout << "---------------------------"<< std::endl;
+	std::cout << "calling constructor fluid_tank()"<< std::endl;	
+	name = str1;
+	origin = pt1;	
+	std::cout << "name of the fluid_tank: " << str1 << std::endl;
+	init_fluid_interfaces();
+	init_thermodynamic_state_water();
+}
+
+int fluid_tank::primeUpdate()
+{
+	std::cout << "calling fluid_tank (" <<name<< ") primeUpdate();"<< std::endl;
+	return 0;	
+}
+
+int fluid_tank::update()
+{
+	std::cout << "calling fluid_tank (" <<name<< ") update()"<< std::endl;
+	
+	
+	std::cout << name << " index: " << index << std::endl;
+	
+	return 0;	
+}
+
+int fluid_tank::draw(cv::Mat &mat)
+{
+	std::cout << "calling fluid_tank (" <<name<< ") draw()"<< std::endl;
+	draw_back(mat);
+	draw_dynamics(mat);
+	draw_front(mat);
+	return 0;		
+}
+
+int fluid_tank::draw_back(cv::Mat &mat)
+{
+	//function for drawing the back graphics of the fluid_tank:
+	cv::Scalar color1 = cv::Scalar(100,100,100);	
+	cv::rectangle(mat,origin, origin+cv::Point2f(100,150),color1 , 4, 1);	
+	return 0;
+}
+
+int fluid_tank::draw_front(cv::Mat &mat)
+{
+	//function for drawing the front graphics of the fluid_tank:
+	
+	cv::Scalar color1 = cv::Scalar(25,100,25);
+	
+	return 0;
+}
+
+int fluid_tank::draw_dynamics(cv::Mat &mat)
+{	
+	//function for drawing the dynamic graphics of the fluid_tank:
+	cv::Scalar color1 = cv::Scalar(100,0,0);
+	float waterlvl; //[0...1]
+	float watervolume = thermodynamic_stateMap["water"]->V;
+	float vesselvolume = V_vessel;
+	
+	waterlvl = watervolume / vesselvolume;
+	
+	cv::rectangle(mat,origin+cv::Point2f(0+3,150-150*waterlvl-3), origin+cv::Point2f(100-3,150-3),color1 , CV_FILLED, 1);
+	
+	return 0;
+}
+
+int fluid_tank::init_fluid_interfaces()
+{
+	std::cout << "calling fluid_tank (" <<name<< ") init_fluid_interfaces()"<< std::endl;
+	
+	//fluid_interfaceMap.emplace("<interface_name>", std::make_shared<fluid_interface>("<interface_name>"));
+	
+	fluid_interfaceMap.emplace("liquid_port_1", std::make_shared<fluid_interface>("liquid_port_1"));	
+	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>("liquid_port_2"));
+	
+	return 0;
+}
+
+void fluid_tank::init_thermodynamic_state_water()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling fluid_tank: ("<< name <<") init_thermodynamic_state_water()"<< std::endl;
+	
+	//create the thermo dynamic states for the reactor
+	thermodynamic_stateMap.emplace("water", std::make_shared<thermodynamic_state>("water"));
+	
+	
+	//creating a working copy of the reactor thermodynamic_state water:
+	thermodynamic_state local_water = *(thermodynamic_stateMap.at("water"));	
+	std::cout << "local_water name: " << local_water.name << std::endl;
+	
+	//init the thermodynamic state parameters (for water):
+	local_water.state_type = "fluid";				// "solid" "fluid" "gas"
+	local_water.p = 101325.0;						// [N / m^2 ] 	pressure
+	local_water.rho = 1000;							// [kg / m^3 ]  density (water liquid 1000)
+	local_water.V = 800.0;							// [m^3]		volume	
+	local_water.T = 300.0;							// [K]			temperature
+	local_water.m = local_water.V*local_water.rho;	// [kg]			mass
+	local_water.M = 0.0160428;						// [kg / mol ]	molar mass
+	local_water.Cv = 4181.3;						// [J / (kg*K)] Specific heat capacity (const volume)
+	local_water.Cp = 4181.3;						// [J / (kg*K)] Specific heat capacity (const preassure)
+	local_water.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids	
+	local_water.Hv = 43990;							// [J / mol ] Verdampfungsenthalpie
+
+	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
+	
+	//assigning the working copy of the reactor thermodynamic_state water back to the reactor:
+	*(thermodynamic_stateMap.at("water")) = local_water;	
 }
 
 //######################################################################

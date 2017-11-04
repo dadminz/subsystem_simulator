@@ -49,7 +49,7 @@ void my_programm()
 	Game.draw_game(layer);
 	
 	//Game sim loop:
-	for(int i = 0 ; i< 4000 ; i++)
+	for(int i = 0 ; i< 0 ; i++)
 	{		
 		std::cout <<std::endl  <<"GameTime[s]: " << Game.GameTime << std::endl;
 		if(i%10 == 0)

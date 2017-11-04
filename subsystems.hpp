@@ -151,9 +151,37 @@ class fluid_pump: public GameObject
 		double dVmax;	//maximum volume flow 			[m^3 / s ]	
 };
 
+class fluid_tank: public GameObject
+{
+	private:		
+	
+	public:
+		fluid_tank(const std::string &str1, cv::Point2f pt1); //Constructor
+		
+		int primeUpdate();
+		int update();
+		int draw(cv::Mat &mat);
+		int draw_back(cv::Mat &mat);
+		int draw_front(cv::Mat &mat);
+		int draw_dynamics(cv::Mat &mat);
+		int init_fluid_interfaces();
+		
+		void init_thermodynamic_state_water();
+		
+		int index = 4200;
+		cv::Point2f origin = cv::Point2f(0,0);
+		
+		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};
+		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
+		
+		//physical Properties of the tank:
+		double V_vessel = 1000; // [m^3] reactor vessel volume		
+		
+};
+
 class reactor_vessel: public GameObject
 {
-	private:	
+	private:		
 	
 	public:
 		reactor_vessel(const std::string &str1, cv::Point2f pt1);	//Constructor
@@ -163,11 +191,12 @@ class reactor_vessel: public GameObject
 		int draw_back(cv::Mat &mat);
 		int draw_front(cv::Mat &mat);
 		int draw_dynamics(cv::Mat &mat);
-		int init_fluid_interfaces();
+		int init_fluid_interfaces();		
 		int index = 9001;
 		cv::Point2f origin = cv::Point2f(0,0);
+
 		
-		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
+		double thermal_power = 0*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		
