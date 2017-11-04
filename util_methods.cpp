@@ -24,7 +24,7 @@ void plot_line_grid(const cv::Mat &mat,const int &spacing_x, const int &spacing_
 
 			if( (ix%div_major == 0) && (iy%div_major == 0) )
 			{
-				cv::circle(mat, cv::Point(ix,iy), linesize*2, color*2, CV_FILLED, CV_FILLED );
+				//cv::circle(mat, cv::Point(ix,iy), linesize*2, color*2, CV_FILLED, CV_FILLED );
 				cv::circle(mat, cv::Point(ix,iy), linesize, color, CV_FILLED, CV_FILLED );				
 			}
 			else

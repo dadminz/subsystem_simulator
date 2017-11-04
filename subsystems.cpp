@@ -41,7 +41,8 @@ fluid_interface::fluid_interface(const std::string &str1)
 //######################################################################
 //SolverClasses:
 
-
+//######################################################################
+//Constructor of reactor_solver
 reactor_solver::reactor_solver(const std::string &str1)
 {
 	std::cout << "calling constructor reactor_solver()"<< std::endl;
@@ -191,6 +192,16 @@ void reactor_solver::solve_type_a(const double &dts)
 	std::cout << "water:" << "\tmass: " << local_water.m << "\tvolume " << local_water.V << "\trho: " << local_water.rho << "\tpressure: " << local_water.p << "\tTemperature: " << local_water.T << std::endl;
 	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
 
+}
+
+//######################################################################
+//Constructor of fluid_pump_solver
+
+fluid_pump_solver::fluid_pump_solver(const std::string &str1)
+{
+	std::cout << "calling constructor fluid_pump_solver()"<< std::endl;
+	name = str1;
+	std::cout << "name of the fluid_pump_solver: " << str1 << std::endl;	
 }
 
 //######################################################################

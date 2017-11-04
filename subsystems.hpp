@@ -10,6 +10,7 @@
 //Declare Classes:
 class reactor_solver;
 class reactor_vessel;
+class fluid_pump;
 
 
 //Define Classes:
@@ -114,6 +115,17 @@ class reactor_solver
 				
 };
 
+class fluid_pump_solver
+{	
+	private:
+	
+	public:
+		fluid_pump_solver(const std::string &str1);
+		std::string name = "fluid_pump_Solver_XXX";
+		int id=20;				
+		std::shared_ptr<fluid_pump> connected_pump;
+};
+
 //######################################################################
 //Component Classes:
 
@@ -144,6 +156,8 @@ class fluid_pump: public GameObject
 		int draw(cv::Mat &mat);
 		int init_fluid_interfaces();
 		cv::Point2f origin = cv::Point2f(0,0);
+		
+		std::shared_ptr<fluid_pump_solver> connected_solver;
 		
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 		
@@ -196,7 +210,7 @@ class reactor_vessel: public GameObject
 		cv::Point2f origin = cv::Point2f(0,0);
 
 		
-		double thermal_power = 0*pow(10,6);	//1000 MW ... crispy ...
+		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		

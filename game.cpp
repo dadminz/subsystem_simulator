@@ -50,10 +50,10 @@ int game::connect_reactor_components()
 	//-------------
 	//define fluid_interfaces:
 	
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("water_inlet_1",std::make_shared<fluid_interface>("water_inlet_1"));	
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("steam_outlet_1",std::make_shared<fluid_interface>("steam_outlet_1"));	
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_1",std::make_shared<fluid_interface>("port_1"));	
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_2",std::make_shared<fluid_interface>("port_2"));		
+	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("water_inlet_1",std::make_shared<fluid_interface>("water_inlet_1"));	
+	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap.emplace("steam_outlet_1",std::make_shared<fluid_interface>("steam_outlet_1"));	
+	//GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_1",std::make_shared<fluid_interface>("port_1"));	
+	//GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap.emplace("port_2",std::make_shared<fluid_interface>("port_2"));		
 	
 	//selftargets
 	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]; //selftarget
@@ -61,14 +61,14 @@ int game::connect_reactor_components()
 		
 	//-------------
 	//init fluid_interfaces:	
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->index = 100;
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->index = 200;	
+	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->index = 100;
+	//GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->index = 200;	
 
 	
 	//-------------
 	//connect fluid_interfaces:	
-	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target = GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"];	
-	GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"];
+	//GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"]->target = GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"];	
+	//GoCast<fluid_pipe>("fPipe_1")->fluid_interfaceMap["port_1"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["water_inlet_1"];
 		
 	//-------------
 	//connect solvers to reactors:	
@@ -217,7 +217,7 @@ int game::draw_game_stats(cv::Mat &mat)
 	variable_name.push_back("Thermal Power [MW]:");
 	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermal_power/1000000 )  );
 	
-	variable_name.push_back("Vessel Preassure [MPa]:");
+	variable_name.push_back("Reactor Pressure [MPa]:");
 	variable.push_back( std::to_string( solver_reactor_1->connected_reactor->thermodynamic_stateMap.at("water")->p/1000000 )  );
 		
 	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,90,255),cv::Point2f(810,625),variable_name,variable);	
