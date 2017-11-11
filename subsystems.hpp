@@ -11,6 +11,10 @@
 class reactor_solver;
 class reactor_vessel;
 class fluid_pump;
+class fluid_pump_solver;
+class steam_turbine;
+class steam_turbine_solver;
+
 
 
 //Define Classes:
@@ -138,12 +142,12 @@ class reactor_solver
 	private:
 	
 	public:
-		reactor_solver(const std::string &str1);
+		reactor_solver(const std::string &str1);	//Constructor
 		void solve_me();
 		void init_thermodynamic_state_type_a();
-		void solve_type_a(const double &dt);
+		void solve_type_a(const double &dts);
 		std::string name = "reactorSolver_XXX";
-		int id=1;				
+		int id=10;				
 		std::shared_ptr<reactor_vessel> connected_reactor;
 				
 };
@@ -153,12 +157,24 @@ class fluid_pump_solver
 	private:
 	
 	public:
-		fluid_pump_solver(const std::string &str1);
+		fluid_pump_solver(const std::string &str1);	//Constructor
 		void solve_pump_a(const double &dts);
 		
 		std::string name = "fluid_pump_Solver_XXX";
 		int id=20;				
 		std::shared_ptr<fluid_pump> connected_pump;
+};
+
+class steam_turbine_solver
+{
+	private:
+	
+	public:
+		steam_turbine_solver(const std::string &str1);	//Constructor
+		void solve_turbine_a(const double &dts);	
+		std::string name = "steam_turbine_Solver_XXX";
+		int id=30;	
+		std::shared_ptr<steam_turbine> connected_turbine;		
 };
 
 //######################################################################
@@ -220,6 +236,7 @@ class steam_turbine: public GameObject
 		int index = 5002;		
 		cv::Point2f origin = cv::Point2f(0,0);
 		
+		std::shared_ptr<steam_turbine_solver> connected_solver;
 	
 		std::unordered_map<std::string,std::shared_ptr<mechanical_rot_state>> mechanical_rot_stateMap = {};
 		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};

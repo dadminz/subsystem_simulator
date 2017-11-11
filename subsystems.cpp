@@ -259,6 +259,23 @@ void fluid_pump_solver::solve_pump_a(const double &dts)
 	 *(connected_pump->fluid_interfaceMap["pump_outlet"]->target->hostTDS ) = local_outlet;	
 }
 
+//######################################################################
+//Constructor of steam_turbine_solver
+
+steam_turbine_solver::steam_turbine_solver(const std::string &str1)
+{
+	std::cout << "calling constructor steam_turbine_solver()"<< std::endl;
+	name = str1;
+	std::cout << "name of the steam_turbine_solver: " << str1 << std::endl;	
+}
+
+void steam_turbine_solver::solve_turbine_a(const double &dts)
+{
+	//debug output:
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling solver: ("<< name <<") solve_turbine_a()"<< std::endl;
+}
+
 
 //######################################################################
 //######################################################################
@@ -507,7 +524,7 @@ void steam_turbine::init_mechanical_state()
 	local_rotation.P = 0;				// [W] Power 						P = M * w		
 	local_rotation.Erot = 0;			// [J] Rotational Energy			E = 1/2*J*w^2	
 	
-	std::cout << "rotation:" <<"mass: "<<local_rotation.m<<"\tinertia J: "<<local_rotation.J<<"\tw: "<<local_rotation.w<<"\tErot: "<<local_rotation.Erot<<std::endl;
+	std::cout << "rotation:" <<"mass: "<<local_rotation.m<<"\tinertia J: "<<local_rotation.J<<"\tw: "<<local_rotation.w<<"\tErot: "<<local_rotation.Erot <<std::endl;
 	
 	//assigning the working copy of the steam_turbine mechanical_rot_state back to the steam_turbine:
 	

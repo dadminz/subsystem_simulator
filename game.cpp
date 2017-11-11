@@ -27,18 +27,15 @@ int game::place_reactor_components()
 	std::cout << "calling place_reactor_components()"<< std::endl;
 		
 	//-------------
-		
+	
 	gameobjectsMap.emplace("reactor_1", std::make_shared<reactor_vessel>("reactor_1",cv::Point2f(100,100)) );		
 	gameobjectsMap.emplace("fPipe_1", std::make_shared<fluid_pipe>("fPipe_1",cv::Point2f(300,350)) );
 	gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1",cv::Point2f(400,350)) );
 	gameobjectsMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2",cv::Point2f(425,375)) );	
-	gameobjectsMap.emplace("fluid_tank_1", std::make_shared<fluid_tank>("fluid_tank_1",cv::Point2f(550,250)) );
+	gameobjectsMap.emplace("fluid_tank_1", std::make_shared<fluid_tank>("fluid_tank_1",cv::Point2f(550,250)) );	
+	gameobjectsMap.emplace("steam_turbine_1", std::make_shared<steam_turbine>("steam_turbine_1",cv::Point2f(500,100)) );	
 	
-	gameobjectsMap.emplace("steam_turbine_1", std::make_shared<steam_turbine>("steam_turbine_1",cv::Point2f(500,100)) );
-	
-	
-
-	
+		
 	//-------------	
 	
 	return 0;
@@ -50,7 +47,8 @@ int game::connect_reactor_components()
 	std::cout << "connect_reactor_components()"<< std::endl;
 	
 	//-------------
-	//connect fluid_interfaces:			
+	//connect fluid_interfaces:	
+	std::cout << "connecting fluid_interfaces: \t... ";	
 	GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"];	
 	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->target = GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"];	
 
@@ -59,29 +57,38 @@ int game::connect_reactor_components()
 	
 	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["gas_port_1"]->target = GoCast<steam_turbine>("steam_turbine_1")->fluid_interfaceMap["steam_intake"];
 	GoCast<steam_turbine>("steam_turbine_1")->fluid_interfaceMap["steam_intake"]->target = GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["gas_port_1"];
-
+	std::cout << "\t[Done]" << std::endl;	
 	
 	
-	std::cout << "interface test: "  << GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"]->target->name << std::endl;
-	std::cout << "interface test: "  << GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->target->name << std::endl;
-	std::cout << "interface test: "  << GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_intake"]->target->name << std::endl;
-	std::cout << "interface test: "  << GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"]->target->name << std::endl;	
-	std::cout << "interface test: "  << GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["gas_port_1"]->target->name << std::endl;
-	std::cout << "interface test: "  << GoCast<steam_turbine>("steam_turbine_1")->fluid_interfaceMap["steam_intake"]->target->name << std::endl;
+	std::cout << "interface test: " << std::endl;
+	std::cout <<  GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_outlet"]->target->name << std::endl;
+	std::cout <<  GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->target->name << std::endl;
+	std::cout <<  GoCast<fluid_pump>("fPump_1")->fluid_interfaceMap["pump_intake"]->target->name << std::endl;
+	std::cout <<  GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"]->target->name << std::endl;	
+	std::cout <<  GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["gas_port_1"]->target->name << std::endl;
+	std::cout <<  GoCast<steam_turbine>("steam_turbine_1")->fluid_interfaceMap["steam_intake"]->target->name << std::endl;
 	
 	//-------------
-	//connect solvers to reactors:	
+	//connect solvers to reactors:
+	std::cout << "connect solvers to reactors: \t... ";		
 	solver_reactor_1->connected_reactor = GoCast<reactor_vessel>("reactor_1");
 	GoCast<reactor_vessel>("reactor_1")->connected_solver = solver_reactor_1;
+	std::cout << "\t[Done]" << std::endl;	
 	
 	//-------------
-	//connect solvers to pumps:		
+	//connect solvers to pumps:
+	std::cout << "connect solvers to pumps: \t... ";				
 	solver_pump_1->connected_pump = GoCast<fluid_pump>("fPump_1");
 	GoCast<fluid_pump>("fPump_1")->connected_solver = solver_pump_1;	
+	std::cout << "\t[Done]" << std::endl;	
 	
 	//-------------
-	//connect solvers to turbines:			
-
+	//connect solvers to turbines:
+	std::cout << "connect solvers to turbines: \t... ";	
+	solver_turbine_1->connected_turbine = GoCast<steam_turbine>("steam_turbine_1");
+	GoCast<steam_turbine>("steam_turbine_1")->connected_solver = solver_turbine_1;
+	std::cout << "\t[Done]" << std::endl;	
+	
 	return 0;			
 }
 
@@ -108,9 +115,12 @@ int game::init_component_fluid_interfaces()
 	std::cout << "==========================="<< std::endl;
 	std::cout << "init_component_interfaces()"<< std::endl;	
 	
-	//giving the TDS pointer of the interfaces the target TDS of their host: 
+	//giving the TDS pointer of the interfaces the target TDS of their host: 	
 	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["liquid_port_1"]->hostTDS = GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap["water"];
 	GoCast<fluid_tank>("fluid_tank_1")->fluid_interfaceMap["liquid_port_1"]->hostTDS = GoCast<fluid_tank>("fluid_tank_1")->thermodynamic_stateMap["water"];
+	
+	GoCast<reactor_vessel>("reactor_1")->fluid_interfaceMap["gas_port_1"]->hostTDS = GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap["steam"];
+	GoCast<steam_turbine>("steam_turbine_1")->fluid_interfaceMap["steam_intake"]->hostTDS = GoCast<steam_turbine>("steam_turbine_1")->thermodynamic_stateMap["steam_in"];
 	
 }
 //######################################################################
@@ -249,6 +259,44 @@ int game::draw_game_stats(cv::Mat &mat)
 	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(255,90,90),cv::Point2f(810,700),variable_name,variable);
 	variable_name.clear();
 	variable.clear();	
+	
+	//--------------
+	//--------------
+	
+	plot_stat_box(mat,cv::Scalar(150,150,150),cv::Scalar(90,255,90),cv::Point2f(800,200),450,250,"Turbine_1 Stats:");
+	
+	variable_name.push_back("steam_in Volume [m^3]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->thermodynamic_stateMap.at("steam_in")->V )  );
+	
+	variable_name.push_back("steam_in Temp [K]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->thermodynamic_stateMap.at("steam_in")->T )  );
+	
+	variable_name.push_back("steam_in press.: [MPa]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->thermodynamic_stateMap.at("steam_in")->p/1000000 )  );
+			
+
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(255,90,90),cv::Point2f(810,225),variable_name,variable);
+	variable_name.clear();
+	variable.clear();
+
+	variable_name.push_back("Speed [rad/s]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->w  ));
+	variable_name.push_back("Speed [1/min]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->w * (1/(2*PI)) * 60  ));
+
+	
+	variable_name.push_back("Torque [Nm]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->M  ));
+	
+	variable_name.push_back("Erot [J]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->Erot  ));	
+	
+	variable_name.push_back("Shaft Power [MW]:");
+	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P/1000000 ));	
+	
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,90,255),cv::Point2f(810,300),variable_name,variable);
+	variable_name.clear();
+	variable.clear();		
 	
 	return 0;
 }

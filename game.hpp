@@ -43,10 +43,13 @@ class game
 		double GameTime=0;		// [s] Global absolute Game Time (no real clock)
 		double dt=1;			// [s] delta Time for updating	
 		
-		std::unordered_map<std::string,std::shared_ptr<GameObject>> gameobjectsMap = {};		
+		std::unordered_map<std::string,std::shared_ptr<GameObject>> gameobjectsMap = {};
+		//all solvers:		
 		std::shared_ptr<reactor_solver> solver_reactor_1 = std::make_shared<reactor_solver>("solver_reactor_1");	
 		std::shared_ptr<reactor_solver> solver_reactor_2 = std::make_shared<reactor_solver>("solver_reactor_2");
-		std::shared_ptr<fluid_pump_solver> solver_pump_1 = std::make_shared<fluid_pump_solver>("solver_pump_1");					
+		std::shared_ptr<fluid_pump_solver> solver_pump_1 = std::make_shared<fluid_pump_solver>("solver_pump_1");
+		std::shared_ptr<steam_turbine_solver> solver_turbine_1 = std::make_shared<steam_turbine_solver>("solver_turbine_1");
+							
 
 		std::list<std::shared_ptr<GameObject>> gameobjects_list;		//list with all Gameobjects 
 		std::list<std::shared_ptr<GameObject>> draw_list;
