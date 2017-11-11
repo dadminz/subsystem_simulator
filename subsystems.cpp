@@ -7,6 +7,7 @@
 #include <fstream>
 #include <math.h>
 
+const double PI  = 3.141592653589793238463;
 
 
 //######################################################################
@@ -398,12 +399,25 @@ int steam_turbine::draw_back(cv::Mat &mat)
 {
 	//function for drawing the back graphics of the steam_turbine:
 	cv::Scalar color1 = cv::Scalar(100,100,100);	
-	cv::rectangle(mat,origin, origin+cv::Point2f(200,100),color1 , 4, 1);
+	//cv::rectangle(mat,origin, origin+cv::Point2f(200,100),color1 , 4, 1);
 	
 	//Pipe 2 Reactor:
-	cv::line(mat,origin+cv::Point2f(25,0),origin+cv::Point2f(25,-50),color1,2,1);
-	cv::line(mat,origin+cv::Point2f(25,-50),origin+cv::Point2f(-225,-50),color1,2,1);
+	cv::line(mat,origin+cv::Point2f(100,30),origin+cv::Point2f(100,-50),color1,2,1);
+	cv::line(mat,origin+cv::Point2f(100,-50),origin+cv::Point2f(-225,-50),color1,2,1);
 	cv::line(mat,origin+cv::Point2f(-225,-50),origin+cv::Point2f(-225,0),color1,2,1);
+	
+	//turbine fan:
+	cv::line(mat,origin+cv::Point2f(10,10),origin+cv::Point2f(100,30),color1,4,1);
+	cv::line(mat,origin+cv::Point2f(190,10),origin+cv::Point2f(100,30),color1,4,1);
+	
+	cv::line(mat,origin+cv::Point2f(10,90),origin+cv::Point2f(100,70),color1,4,1);
+	cv::line(mat,origin+cv::Point2f(190,90),origin+cv::Point2f(100,70),color1,4,1);
+	
+	cv::line(mat,origin+cv::Point2f(10,10),origin+cv::Point2f(10,90),color1,4,1);
+	cv::line(mat,origin+cv::Point2f(190,10),origin+cv::Point2f(190,90),color1,4,1);
+	
+	//Power shaft:	
+	cv::line(mat,origin+cv::Point2f(192,50),origin+cv::Point2f(250,50),color1,4,1);	
 		
 	return 0;
 }
@@ -466,7 +480,7 @@ void steam_turbine::init_thermodynamic_state_steam()
 	
 	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
 	
-	//assigning the working copy of the reactor thermodynamic_state steam back to the reactor:
+	//assigning the working copy of the steam_turbine thermodynamic_states steam back to the steam_turbine:
 	(*(thermodynamic_stateMap.at("steam_in"))) = local_steam;
 	(*(thermodynamic_stateMap.at("steam_out"))) = local_steam;
 }
@@ -475,10 +489,29 @@ void steam_turbine::init_mechanical_state()
 {
 	std::cout << "==========================="<< std::endl;
 	std::cout << "calling steam_turbine: ("<< name <<") init_mechanical_state()"<< std::endl;	
-	//steam_turbine has 1 Mechanical State for the turning parts. :)
+	//steam_turbine has 1 Mechanical State for the turning parts. :)	
 	
-	//create the mechanical_state for the steam_turbine
-	//thermodynamic_stateMap.emplace("steam_in", std::make_shared<thermodynamic_state>(name + ".steam_in"));
+	//create the mechanical_rot_state for the steam_turbine:
+	mechanical_rot_stateMap.emplace("rotation", std::make_shared<mechanical_rot_state>(name + ".rotation"));
+		
+	//creating a working copy of the steam_turbine mechanical_rot_State rotation:
+	mechanical_rot_state local_rotation = *(mechanical_rot_stateMap.at("rotation"));	
+	std::cout << "local_rotation name: " << local_rotation.name << std::endl;
+	
+	local_rotation.m = 10000;			// [kg] Mass 
+	local_rotation.w = 0;				// [rad/s] Angular velocity			w = L/J		
+	local_rotation.a = 0;				// [rad/s^2] Angular acceleration	a = M/J		
+	local_rotation.M = 0;				// [Nm] Torque						M = J*a  ,  dL/dt = M		
+	local_rotation.J = 10000;			// [kg * m^2] Moment of inertia		
+	local_rotation.L = 0;				// [kg * m^2 / s] Angular momentum	L = J * w		
+	local_rotation.P = 0;				// [W] Power 						P = M * w		
+	local_rotation.Erot = 0;			// [J] Rotational Energy			E = 1/2*J*w^2	
+	
+	std::cout << "rotation:" <<"mass: "<<local_rotation.m<<"\tinertia J: "<<local_rotation.J<<"\tw: "<<local_rotation.w<<"\tErot: "<<local_rotation.Erot<<std::endl;
+	
+	//assigning the working copy of the steam_turbine mechanical_rot_state back to the steam_turbine:
+	
+	(*(mechanical_rot_stateMap.at("rotation"))) = local_rotation;
 }
 
 //######################################################################

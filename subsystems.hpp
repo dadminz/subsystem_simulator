@@ -95,6 +95,15 @@ class mechanical_rot_state
 		mechanical_rot_state(const std::string &str1); //Constructor
 		int id;		
 		std::string name;		//e.g powershaft,
+		
+		double m;				// [kg] Mass 
+		double w;				// [rad/s] Angular velocity			w = L/J		
+		double a;				// [rad/s^2] Angular acceleration	a = M/J		
+		double M;				// [Nm] Torque						M = J*a  ,  dL/dt = M		
+		double J;				// [kg * m^2] Moment of inertia		
+		double L;				// [kg * m^2 / s] Angular momentum	L = J * w		
+		double P;				// [W] Power 						P = M * w		
+		double Erot;			// [J] Rotational Energy			E = 1/2*J*w^2		
 };
 
 class mechanical_trans_state
@@ -211,7 +220,8 @@ class steam_turbine: public GameObject
 		int index = 5002;		
 		cv::Point2f origin = cv::Point2f(0,0);
 		
-		//needs mecanical_stateMap
+	
+		std::unordered_map<std::string,std::shared_ptr<mechanical_rot_state>> mechanical_rot_stateMap = {};
 		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};
 		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 };
