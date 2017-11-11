@@ -10,7 +10,7 @@
 
 
 //######################################################################
-//Constructor of thermodynamic_state
+//Constructor of connection_net
 connection_net::connection_net()
 {
 	std::cout << "calling constructor connection_net()"<< std::endl;	
@@ -26,6 +26,23 @@ thermodynamic_state::thermodynamic_state(const std::string &str1)
 	std::cout << "name of the thermodynamic_state: " << str1 << std::endl;	
 }
 
+//######################################################################
+//Constructor of mechanical_rot_state
+mechanical_rot_state::mechanical_rot_state(const std::string &str1)
+{
+	std::cout << "calling constructor mechanical_rot_state()"<< std::endl;
+	name = str1;
+	std::cout << "name of the mechanical_rot_state: " << str1 << std::endl;	
+}
+
+//######################################################################
+//Constructor of mechanical_trans_state
+mechanical_trans_state::mechanical_trans_state(const std::string &str1)
+{
+	std::cout << "calling constructor mechanical_trans_state()"<< std::endl;
+	name = str1;
+	std::cout << "name of the mechanical_trans_state: " << str1 << std::endl;	
+}
 
 //######################################################################
 //Constructor of fluid_interface
@@ -341,6 +358,130 @@ int fluid_pump::init_fluid_interfaces()
 }
 
 //######################################################################
+//Constructor of steam_turbine
+
+steam_turbine::steam_turbine(const std::string &str1, cv::Point2f pt1)
+{
+	std::cout << "---------------------------"<< std::endl;
+	std::cout << "calling constructor steam_turbine()"<< std::endl;	
+	name = str1;
+	origin = pt1;	
+	std::cout << "name of the steam_turbine: " << str1 << std::endl;
+	init_fluid_interfaces();
+	init_thermodynamic_state_steam();
+	init_mechanical_state();
+}
+
+int steam_turbine::primeUpdate()
+{
+	std::cout << "calling steam_turbine (" <<name<< ") primeUpdate();"<< std::endl;
+	return 0;	
+}
+
+int steam_turbine::update()
+{
+	std::cout << "calling steam_turbine (" <<name<< ") update()"<< std::endl;	
+	std::cout << name << " index: " << index << std::endl;	
+	return 0;	
+}
+
+int steam_turbine::draw(cv::Mat &mat)
+{
+	std::cout << "calling steam_turbine (" <<name<< ") draw()"<< std::endl;
+	draw_back(mat);
+	draw_dynamics(mat);
+	draw_front(mat);
+	return 0;		
+}
+
+int steam_turbine::draw_back(cv::Mat &mat)
+{
+	//function for drawing the back graphics of the steam_turbine:
+	cv::Scalar color1 = cv::Scalar(100,100,100);	
+	cv::rectangle(mat,origin, origin+cv::Point2f(200,100),color1 , 4, 1);
+	
+	//Pipe 2 Reactor:
+	cv::line(mat,origin+cv::Point2f(25,0),origin+cv::Point2f(25,-50),color1,2,1);
+	cv::line(mat,origin+cv::Point2f(25,-50),origin+cv::Point2f(-225,-50),color1,2,1);
+	cv::line(mat,origin+cv::Point2f(-225,-50),origin+cv::Point2f(-225,0),color1,2,1);
+		
+	return 0;
+}
+
+int steam_turbine::draw_front(cv::Mat &mat)
+{
+	//function for drawing the front graphics of the steam_turbine:
+	
+	cv::Scalar color1 = cv::Scalar(25,100,25);
+	
+	return 0;
+}
+
+int steam_turbine::draw_dynamics(cv::Mat &mat)
+{	
+	//function for drawing the dynamic graphics of the steam_turbine:
+	cv::Scalar color1 = cv::Scalar(100,0,0);	
+	return 0;
+}
+
+int steam_turbine::init_fluid_interfaces()
+{
+	std::cout << "calling steam_turbine (" <<name<< ") init_fluid_interfaces()"<< std::endl;
+		
+	fluid_interfaceMap.emplace("steam_intake", std::make_shared<fluid_interface>(name + ".steam_intake"));	
+	fluid_interfaceMap.emplace("steam_outlet", std::make_shared<fluid_interface>(name + ".steam_outlet"));	
+	return 0;
+}
+
+void steam_turbine::init_thermodynamic_state_steam()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling steam_turbine: ("<< name <<") init_thermodynamic_state_steam()"<< std::endl;
+	
+	//Steam turbine has 2 TDS (in and out) because ist a flow machine. At Sim Start TDS in and out are the same
+	
+	//create the thermo dynamic states for the steam_turbine
+	thermodynamic_stateMap.emplace("steam_in", std::make_shared<thermodynamic_state>(name + ".steam_in"));
+	thermodynamic_stateMap.emplace("steam_out", std::make_shared<thermodynamic_state>(name + ".steam_out"));
+		
+	//creating a working copy of the reactor thermodynamic_state steam:
+	thermodynamic_state local_steam = *(thermodynamic_stateMap.at("steam_in"));	
+	std::cout << "local_steam name: " << local_steam.name << std::endl;
+	
+	//init the thermodynamic state parameters (for steam):
+	local_steam.state_type = "gas";					// "solid" "fluid" "gas"
+	local_steam.p = 101325.0;						// [N / m^2 ] 	pressure
+	local_steam.rho = local_steam.m/local_steam.V;	// [kg / m^3 ]  density (water liquid 1000)
+	local_steam.V = 1.0;							// [m^3]		volume	
+	local_steam.T = 300.0;							// [K]			temperature
+	local_steam.m = 25.0;							// [kg]			mass
+	local_steam.M = 0.0160428;						// [kg / mol ]	molar mass
+	local_steam.Cv = 2080.0;						// [J / (kg*K)] Specific heat capacity (const volume)
+	local_steam.Cp = 2080.0;						// [J / (kg*K)] Specific heat capacity (const preassure)
+	local_steam.av = 0.000207;						// [1/K] Thermal expansion (volume)	req. for solids and liquids	
+	local_steam.Hv = 43990;							// [J / mol ] Verdampfungsenthalpie 25°C
+	
+	local_steam.m = (local_steam.p*local_steam.V*local_steam.M) / (local_steam.R*local_steam.T) ;	// p*V*M / R*T = m  ... Ideal Gas formular
+	local_steam.rho = local_steam.m/local_steam.V;
+	
+	std::cout << "steam:" << "\tmass: " << local_steam.m << "\tvolume " << local_steam.V << "\trho: " << local_steam.rho << "\tpressure: " << local_steam.p << "\tTemperature: " << local_steam.T << std::endl;	
+	
+	//assigning the working copy of the reactor thermodynamic_state steam back to the reactor:
+	(*(thermodynamic_stateMap.at("steam_in"))) = local_steam;
+	(*(thermodynamic_stateMap.at("steam_out"))) = local_steam;
+}
+
+void steam_turbine::init_mechanical_state()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling steam_turbine: ("<< name <<") init_mechanical_state()"<< std::endl;	
+	//steam_turbine has 1 Mechanical State for the turning parts. :)
+	
+	//create the mechanical_state for the steam_turbine
+	//thermodynamic_stateMap.emplace("steam_in", std::make_shared<thermodynamic_state>(name + ".steam_in"));
+}
+
+//######################################################################
 //Constructor of fluid_tank
 
 fluid_tank::fluid_tank(const std::string &str1, cv::Point2f pt1)
@@ -362,11 +503,8 @@ int fluid_tank::primeUpdate()
 
 int fluid_tank::update()
 {
-	std::cout << "calling fluid_tank (" <<name<< ") update()"<< std::endl;
-	
-	
-	std::cout << name << " index: " << index << std::endl;
-	
+	std::cout << "calling fluid_tank (" <<name<< ") update()"<< std::endl;	
+	std::cout << name << " index: " << index << std::endl;	
 	return 0;	
 }
 
@@ -389,10 +527,8 @@ int fluid_tank::draw_back(cv::Mat &mat)
 
 int fluid_tank::draw_front(cv::Mat &mat)
 {
-	//function for drawing the front graphics of the fluid_tank:
-	
-	cv::Scalar color1 = cv::Scalar(25,100,25);
-	
+	//function for drawing the front graphics of the fluid_tank:	
+	cv::Scalar color1 = cv::Scalar(25,100,25);	
 	return 0;
 }
 
@@ -404,10 +540,8 @@ int fluid_tank::draw_dynamics(cv::Mat &mat)
 	float watervolume = thermodynamic_stateMap["water"]->V;
 	float vesselvolume = V_vessel;
 	
-	waterlvl = watervolume / vesselvolume;
-	
-	cv::rectangle(mat,origin+cv::Point2f(0+3,150-150*waterlvl-3), origin+cv::Point2f(100-3,150-3),color1 , CV_FILLED, 1);
-	
+	waterlvl = watervolume / vesselvolume;	
+	cv::rectangle(mat,origin+cv::Point2f(0+3,150-150*waterlvl-3), origin+cv::Point2f(100-3,150-3),color1 , CV_FILLED, 1);	
 	return 0;
 }
 
@@ -415,11 +549,8 @@ int fluid_tank::init_fluid_interfaces()
 {
 	std::cout << "calling fluid_tank (" <<name<< ") init_fluid_interfaces()"<< std::endl;
 	
-	//fluid_interfaceMap.emplace("<interface_name>", std::make_shared<fluid_interface>("<interface_name>"));
-	
 	fluid_interfaceMap.emplace("liquid_port_1", std::make_shared<fluid_interface>(name + ".liquid_port_1"));	
-	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>(name + ".liquid_port_2"));
-	
+	fluid_interfaceMap.emplace("liquid_port_2", std::make_shared<fluid_interface>(name + ".liquid_port_2"));	
 	return 0;
 }
 
@@ -477,7 +608,7 @@ int reactor_vessel::update()
 {
 	std::cout << "calling reactor_vessel (" <<name<< ") update()"<< std::endl;
 	
-	connected_solver->solve_me();
+	connected_solver->solve_me(); //only a test function call
 	std::cout << name << " index: " << index << std::endl;
 	
 	return 0;	

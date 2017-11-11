@@ -87,6 +87,26 @@ class thermodynamic_state
 		double av;				// [1/K] Thermal expansion (volume)	req. for solids and liquids
 };
 
+class mechanical_rot_state
+{
+	private:
+	
+	public:
+		mechanical_rot_state(const std::string &str1); //Constructor
+		int id;		
+		std::string name;		//e.g powershaft,
+};
+
+class mechanical_trans_state
+{
+	private:
+	
+	public:
+		mechanical_trans_state(const std::string &str1); //Constructor
+		int id;		
+		std::string name;		//e.g powershaft,
+};
+
 class fluid_interface: public Interface 
 {
 	private:
@@ -169,6 +189,31 @@ class fluid_pump: public GameObject
 		
 		double Pmax;	//maximum preasure difference	[N / m^2]
 		double dVmax;	//maximum volume flow 			[m^3 / s ]	
+};
+
+class steam_turbine: public GameObject
+{
+	private:
+	
+	public:
+		steam_turbine(const std::string &str1, cv::Point2f pt1); //Constructor
+		int primeUpdate();
+		int update();
+		int draw(cv::Mat &mat);
+		int draw_back(cv::Mat &mat);
+		int draw_front(cv::Mat &mat);
+		int draw_dynamics(cv::Mat &mat);
+		int init_fluid_interfaces();
+		
+		void init_thermodynamic_state_steam();
+		void init_mechanical_state();
+
+		int index = 5002;		
+		cv::Point2f origin = cv::Point2f(0,0);
+		
+		//needs mecanical_stateMap
+		std::unordered_map<std::string,std::shared_ptr<thermodynamic_state>> thermodynamic_stateMap = {};
+		std::unordered_map<std::string,std::shared_ptr<fluid_interface>> fluid_interfaceMap = {};
 };
 
 class fluid_tank: public GameObject
