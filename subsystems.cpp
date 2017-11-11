@@ -155,14 +155,20 @@ void reactor_solver::solve_type_a(const double &dts)
 	double rV = connected_reactor->V_vessel;	   // [m^3]	  Reactor vessel volume
 	double dT= 0;								   // [K]	  temperature change
 	double dVwater = 0;							   // [m^3/s] Water flow into the Reactor		
-	double dVsteam = 0;			   				   // [m^3/s] Steam flow from the Reactor
+	double dVsteam = 0;			   				   // [kg/s] Steam flow from the Reactor
 	double dm = 0;								   // [kg]	  boiled off water mass
 	
 	
 	//Waterflow into the reactor
-	local_water.V = local_water.V + dVwater;
+	local_water.V = local_water.V + dVwater;	
+	local_water.m  = local_water.rho * local_water.V ; //(helper?)
 	//Steamflow from the reactor
-	local_steam.V = local_steam.V - dVsteam;	
+	local_steam.m = local_steam.m - dVsteam;
+	
+	//preassure calculation for steam (help?):
+	local_steam.p = (local_steam.m/local_steam.M) * ( (local_steam.R*local_steam.T) / local_steam.V ); // p = m/M * (R*T)/V   ... Ideal Gas formular
+	local_water.p = local_steam.p;	//the vessel pressure is created by the steam preassure (fluids are incompressible)
+	
 	
 	//checking the pressure dependent boiling point of water: (no critical implemented :( )
 	if(local_water.p >= magnus(local_water.T))
@@ -243,11 +249,12 @@ void fluid_pump_solver::solve_pump_a(const double &dts)
 	std::cout << "local_intake TDS Temp: " <<  local_intake.T << std::endl;
 	std::cout << "local_outlet TDS Temp: " <<  local_outlet.T << std::endl;
 	
+	//WIP NEEDS TEMPERATURE MIXING !
 	if(local_outlet.V < 80 && local_intake.V > pump_rate*dts )
 	{
 	
 	local_intake.V = local_intake.V - pump_rate*dts;
-	local_intake.m = local_intake.V * local_intake.rho;
+	local_intake.m = local_intake.V * local_intake.rho;	
 	
 	local_outlet.V = local_outlet.V + pump_rate*dts;
 	local_outlet.m = local_outlet.V * local_outlet.rho;
@@ -274,6 +281,35 @@ void steam_turbine_solver::solve_turbine_a(const double &dts)
 	//debug output:
 	std::cout << "==========================="<< std::endl;
 	std::cout << "calling solver: ("<< name <<") solve_turbine_a()"<< std::endl;
+	
+	//creating a working copy of the intake Source / steam_in thermodynamic_state steam:
+	thermodynamic_state local_intake_steam = *(connected_turbine->fluid_interfaceMap["steam_intake"]->target->hostTDS );
+	thermodynamic_state local_steam_in = 	*(connected_turbine->thermodynamic_stateMap["steam_in"] );
+	
+	mechanical_rot_state local_rotation = *(connected_turbine->mechanical_rot_stateMap["rotation"]);
+	
+	std::cout << "local_intake_steam TDS name: " << local_intake_steam.name << std::endl;
+	std::cout << "local_steam_in TDS name: " << local_steam_in.name << std::endl;
+	std::cout << "local_rotation MRS name: " << local_rotation.name << std::endl;
+	
+	//-------------------------
+	// solving of the Turbine here:
+	
+	double steam_massflow_rate = 100; 	//[kg/s]
+	
+	if(local_intake_steam.m > steam_massflow_rate*dts)
+	{
+	local_intake_steam.m = local_intake_steam.m - steam_massflow_rate*dts;  //Removing steam from the source (reactor)
+	
+	}
+	
+	
+	//-------------------------
+	
+	//writing the working copy of intake/outlet back to the target thermodynamic_states and mechanical States:	
+	*(connected_turbine->fluid_interfaceMap["steam_intake"]->target->hostTDS) = local_intake_steam;
+	*(connected_turbine->thermodynamic_stateMap["steam_in"]) = local_steam_in;
+	*(connected_turbine->mechanical_rot_stateMap["rotation"]) = local_rotation;	
 }
 
 

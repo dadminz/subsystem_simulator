@@ -288,7 +288,7 @@ class reactor_vessel: public GameObject
 		cv::Point2f origin = cv::Point2f(0,0);
 
 		
-		double thermal_power = 1000*pow(10,6);	//1000 MW ... crispy ...
+		double thermal_power = 300*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		

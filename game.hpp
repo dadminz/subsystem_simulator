@@ -39,6 +39,9 @@ class game
 		std::list<cv::Point2f>graph_pressure_water;
 		std::list<cv::Point2f>graph_temperature_water;
 		std::list<cv::Point2f>graph_volume_water;
+		std::list<cv::Point2f>graph_turbine_speed;
+		std::list<cv::Point2f>graph_turbine_shaft_power;
+		
 		
 		double GameTime=0;		// [s] Global absolute Game Time (no real clock)
 		double dt=1;			// [s] delta Time for updating	

@@ -170,6 +170,7 @@ int game::update_game()
 	}
 	
 	solver_pump_1->solve_pump_a(dt);
+	solver_turbine_1->solve_turbine_a(dt);
 	solver_reactor_1->solve_type_a(dt);		//needs work!
 	
 	GameTime = GameTime + dt;
@@ -201,13 +202,17 @@ int game::draw_game_plots(cv::Mat &mat)
 	std::cout << "---------------------------"<< std::endl;
 	std::cout << "calling game draw_game_plots()"<< std::endl;	
 	
-	plot_graph_xy(mat,graph_pressure_steam,cv::Scalar(255,0,0),cv::Point2f(50,750),200,100,"steam_pressure (t)");
-	plot_graph_xy(mat,graph_volume_steam,cv::Scalar(0,255,0),cv::Point2f(300,750),200,100,"steam_volume (t)");	
-	plot_graph_xy(mat,graph_temperature_steam,cv::Scalar(0,0,255),cv::Point2f(550,750),200,100,"steam_temperature (t)");
-		
-	plot_graph_xy(mat,graph_pressure_water,cv::Scalar(255,0,0),cv::Point2f(50,600),200,100,"water_pressure (t)");
-	plot_graph_xy(mat,graph_volume_water,cv::Scalar(0,255,0),cv::Point2f(300,600),200,100,"water_volume (t)");	
-	plot_graph_xy(mat,graph_temperature_water,cv::Scalar(0,0,255),cv::Point2f(550,600),200,100,"water_temperature (t)");
+	plot_graph_xy(mat,graph_volume_steam,cv::Scalar(0,255,0),cv::Point2f(50,750),200,100,"steam_volume (t)");
+	plot_graph_xy(mat,graph_volume_water,cv::Scalar(0,255,0),cv::Point2f(50,600),200,100,"water_volume (t)");	
+	
+	plot_graph_xy(mat,graph_temperature_water,cv::Scalar(0,0,255),cv::Point2f(300,600),200,100,"water_temperature (t)");
+	plot_graph_xy(mat,graph_pressure_steam,cv::Scalar(255,0,0),cv::Point2f(300,750),200,100,"steam_pressure (t)");
+	
+	
+	plot_graph_xy(mat,graph_turbine_speed,cv::Scalar(0,255,255),cv::Point2f(550,600),200,100,"turbine speed (t)");
+	plot_graph_xy(mat,graph_turbine_shaft_power,cv::Scalar(0,255,255),cv::Point2f(550,750),200,100,"turbine shaft power (t)");
+	
+	
 	
 	return 0;		
 }
@@ -312,6 +317,9 @@ int game::create_plot_points()
 	graph_pressure_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->p)) ;
 	graph_temperature_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->T));
 	graph_volume_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->V));	
+	
+	graph_turbine_speed.push_back(cv::Point2f(GameTime,GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->w));	
+	graph_turbine_shaft_power.push_back(cv::Point2f(GameTime,GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P));	
 
 	return 0;
 }
