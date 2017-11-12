@@ -146,6 +146,7 @@ class reactor_solver
 		void solve_me();
 		void init_thermodynamic_state_type_a();
 		void solve_type_a(const double &dts);
+		void solve_type_b(const double &dts);
 		std::string name = "reactorSolver_XXX";
 		int id=10;				
 		std::shared_ptr<reactor_vessel> connected_reactor;
@@ -174,7 +175,8 @@ class steam_turbine_solver
 		void solve_turbine_a(const double &dts);	
 		std::string name = "steam_turbine_Solver_XXX";
 		int id=30;	
-		std::shared_ptr<steam_turbine> connected_turbine;		
+		std::shared_ptr<steam_turbine> connected_turbine;
+		double TurbinePower = 0; //[W]		
 };
 
 //######################################################################
@@ -288,7 +290,7 @@ class reactor_vessel: public GameObject
 		cv::Point2f origin = cv::Point2f(0,0);
 
 		
-		double thermal_power = 300*pow(10,6);	//1000 MW ... crispy ...
+		double thermal_power = 500*pow(10,6);	//1000 MW ... crispy ...
 
 		std::shared_ptr<reactor_solver> connected_solver;
 		

@@ -297,7 +297,8 @@ int game::draw_game_stats(cv::Mat &mat)
 	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->Erot  ));	
 	
 	variable_name.push_back("Shaft Power [MW]:");
-	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P/1000000 ));	
+	//variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P/1000000 ));	
+	variable.push_back( std::to_string( solver_turbine_1->TurbinePower/1000000));	
 	
 	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,90,255),cv::Point2f(810,300),variable_name,variable);
 	variable_name.clear();
@@ -319,7 +320,8 @@ int game::create_plot_points()
 	graph_volume_water.push_back(cv::Point2f(GameTime,GoCast<reactor_vessel>("reactor_1")->thermodynamic_stateMap.at("water")->V));	
 	
 	graph_turbine_speed.push_back(cv::Point2f(GameTime,GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->w));	
-	graph_turbine_shaft_power.push_back(cv::Point2f(GameTime,GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P));	
+	//graph_turbine_shaft_power.push_back(cv::Point2f(GameTime,GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P));	
+	graph_turbine_shaft_power.push_back(cv::Point2f(GameTime,solver_turbine_1->TurbinePower/1000000));	
 
 	return 0;
 }
