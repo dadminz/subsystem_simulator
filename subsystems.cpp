@@ -46,6 +46,35 @@ mechanical_trans_state::mechanical_trans_state(const std::string &str1)
 }
 
 //######################################################################
+//Constructor of electric_ac_state
+electric_ac_state::electric_ac_state(const std::string &str1)
+{
+	std::cout << "calling constructor electric_ac_state()"<< std::endl;
+	name = str1;
+	std::cout << "name of the electric_ac_state: " << str1 << std::endl;	
+}
+
+//######################################################################
+//Constructor of mechanical_interface
+mechanical_interface::mechanical_interface(const std::string &str1)
+{
+	std::cout << "calling constructor mechanical_interface()"<< std::endl;
+	name = str1;
+	std::cout << "name of the mechanical_interface: " << str1 << std::endl;	
+}
+
+//######################################################################
+//Constructor of electric_interface
+electric_interface::electric_interface(const std::string &str1)
+{
+	std::cout << "calling constructor electric_interface()"<< std::endl;
+	name = str1;
+	std::cout << "name of the electric_interface: " << str1 << std::endl;	
+}
+
+
+
+//######################################################################
 //Constructor of fluid_interface
 fluid_interface::fluid_interface(const std::string &str1)
 {
@@ -431,11 +460,169 @@ void steam_turbine_solver::solve_turbine_a(const double &dts)
 	*(connected_turbine->mechanical_rot_stateMap["rotation"]) = local_rotation;	
 }
 
+//######################################################################
+//Constructor of electric_generator_solver
 
+electric_generator_solver::electric_generator_solver(const std::string &str1)
+{
+	std::cout << "calling constructor electric_generator_solver()"<< std::endl;
+	name = str1;
+	std::cout << "name of the electric_generator_solver: " << str1 << std::endl;	
+}
+
+void electric_generator_solver::solve_generator_ac(const double &dts)
+{
+	//debug output:
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling solver: ("<< name <<") solve_generator_ac()"<< std::endl;
+	
+}
 //######################################################################
 //######################################################################
 //######################################################################
 //Component Classes:
+
+//######################################################################
+//Constructor of electric_generator
+
+electric_generator::electric_generator(const std::string &str1, cv::Point2f pt1)
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling constructor electric_generator()"<< std::endl;	
+	name = str1;
+	origin = pt1;	
+	std::cout << "name of the electric_generator: " << str1 << std::endl;
+	
+	init_mechanical_interfaces();
+	init_electrical_interfaces();		
+	init_electrical_ac_state();
+	init_mechanical_rot_state();
+}
+
+int electric_generator::primeUpdate()
+{
+	std::cout << "calling electric_generator (" <<name<< ") primeUpdate();"<< std::endl;
+	return 0;	
+}
+
+int electric_generator::update()
+{
+	std::cout << "calling electric_generator (" <<name<< ") update()"<< std::endl;	
+	std::cout << name << " index: " << index << std::endl;	
+	return 0;	
+}
+
+int electric_generator::draw(cv::Mat &mat)
+{
+	std::cout << "calling electric_generator (" <<name<< ") draw()"<< std::endl;
+	draw_back(mat);
+	draw_dynamics(mat);
+	draw_front(mat);
+	return 0;		
+}
+
+int electric_generator::draw_back(cv::Mat &mat)
+{
+	//function for drawing the back graphics of the electric_generator:
+	cv::Scalar color1 = cv::Scalar(100,100,100);	
+	
+	//P
+	//cv::line(mat,origin+cv::Point2f(100,30),origin+cv::Point2f(100,-50),color1,2,1);
+	
+	cv::circle( mat, origin+cv::Point2f( 50, 50 ), 50, color1, 2, CV_FILLED );
+	
+	cv::putText(mat, "G" ,origin+cv::Point2f( 23, 75 ), cv::FONT_HERSHEY_SIMPLEX, 2.5, color1, 2);
+
+		
+	return 0;
+}
+
+int electric_generator::draw_front(cv::Mat &mat)
+{
+	//function for drawing the front graphics of the electric_generator:
+	
+	cv::Scalar color1 = cv::Scalar(25,100,25);
+	
+	return 0;
+}
+
+int electric_generator::draw_dynamics(cv::Mat &mat)
+{	
+	//function for drawing the dynamic graphics of the electric_generator:
+	cv::Scalar color1 = cv::Scalar(100,0,0);	
+	return 0;
+}
+
+ 
+int electric_generator::init_mechanical_interfaces()
+{
+	std::cout << "calling electric_generator (" <<name<< ") init_mechanical_interfaces()"<< std::endl;	
+	
+	mechanical_interfaceMap.emplace("shaft" , std::make_shared<mechanical_interface>(name + ".shaft"));
+		
+	return 0;
+}
+
+int electric_generator::init_electrical_interfaces()
+{
+	std::cout << "calling electric_generator (" <<name<< ") init_electrical_interfaces()"<< std::endl;	
+	
+	electric_interfaceMap.emplace("L1_out" , std::make_shared<electric_interface>(name + ".L1_out"));
+	electric_interfaceMap.emplace("L2_out" , std::make_shared<electric_interface>(name + ".L2_out"));
+	electric_interfaceMap.emplace("L3_out" , std::make_shared<electric_interface>(name + ".L3_out"));
+		
+	return 0;
+}
+
+int electric_generator::init_electrical_ac_state()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling electric_generator: ("<< name <<") init_electrical_ac_state()"<< std::endl;
+	
+	//electric_generator has 1 or 3 EACS (ACout)
+	
+	//create the init_electrical_ac_state for the electric_generator
+	electric_ac_stateMap.emplace("L1", std::make_shared<electric_ac_state>(name + ".L1"));
+	electric_ac_stateMap.emplace("L2", std::make_shared<electric_ac_state>(name + ".L2"));
+	electric_ac_stateMap.emplace("L3", std::make_shared<electric_ac_state>(name + ".L3"));	
+		
+	return 0;
+}
+
+int electric_generator::init_mechanical_rot_state()
+{
+	std::cout << "==========================="<< std::endl;
+	std::cout << "calling electric_generator: ("<< name <<") init_mechanical_rot_state()"<< std::endl;
+	
+	//electric_generator has 1 MRS:
+	
+	//create the MRS for the electric_generator:
+	
+	mechanical_rot_stateMap.emplace("rotation", std::make_shared<mechanical_rot_state>(name + ".rotation"));
+	
+	//creating a working copy of the electric_generator mechanical_rot_State rotation:
+	mechanical_rot_state local_rotation = *(mechanical_rot_stateMap.at("rotation"));	
+	std::cout << "local_rotation name: " << local_rotation.name << std::endl;
+	
+	local_rotation.m = 15000;			// [kg] Mass 
+	local_rotation.w = 0;				// [rad/s] Angular velocity			w = L/J		
+	local_rotation.a = 0;				// [rad/s^2] Angular acceleration	a = M/J		
+	local_rotation.M = 0;				// [Nm] Torque						M = J*a  ,  dL/dt = M		
+	local_rotation.J = 15000;			// [kg * m^2] Moment of inertia		
+	local_rotation.L = 0;				// [kg * m^2 / s] Angular momentum	L = J * w		
+	local_rotation.P = 0;				// [W] Power 						P = M * w		
+	local_rotation.Erot = 0;			// [J] Rotational Energy			E = 1/2*J*w^2	
+	
+	std::cout << "rotation:" <<"mass: "<<local_rotation.m<<"\tinertia J: "<<local_rotation.J<<"\tw: "<<local_rotation.w<<"\tErot: "<<local_rotation.Erot <<std::endl;
+	
+	//assigning the working copy of the steam_turbine mechanical_rot_state back to the steam_turbine:
+	
+	(*(mechanical_rot_stateMap.at("rotation"))) = local_rotation;	
+		
+	return 0;
+}
+
+
 //######################################################################
 //Constructor of fluid_pipe
 fluid_pipe::fluid_pipe(const std::string &str1, cv::Point2f pt1)

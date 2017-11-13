@@ -14,6 +14,8 @@ class fluid_pump;
 class fluid_pump_solver;
 class steam_turbine;
 class steam_turbine_solver;
+class electric_generator;
+class electric_generator_solver;
 
 
 
@@ -118,6 +120,50 @@ class mechanical_trans_state
 		mechanical_trans_state(const std::string &str1); //Constructor
 		int id;		
 		std::string name;		//e.g powershaft,
+		
+};
+
+class electric_ac_state
+{
+	private:
+	
+	public:
+		electric_ac_state(const std::string &str1);	//Constructor
+		int id;		
+		std::string name;		//e.g powergrid,
+		
+		double Uac;				//[V] Voltage
+		double Iac;				//[A] Current
+		double Pac;				//[W] Power
+		double w;				//[rad/s] Frequency  (2*Pi*f)
+		double f;				//[Hz] Frequency
+		double PhiU;			//[rad] Voltage Phase Angle
+		double PhiI;			//[rad] Current Phase Angle
+};
+
+class electric_interface: public Interface
+{
+	private:
+	
+	public:
+		electric_interface(const std::string &str1 );	//Constructor
+		
+		int index = 777;		
+		std::shared_ptr<electric_interface> target;		
+		std::shared_ptr<electric_ac_state> hostEACS;
+};
+
+class mechanical_interface: public Interface
+{
+	private:
+	
+	public:
+		mechanical_interface(const std::string &str1 );	//Constructor
+		
+		int index = 666;		
+		std::shared_ptr<mechanical_interface> target;		
+		std::shared_ptr<mechanical_rot_state> hostMRS;
+		std::shared_ptr<mechanical_rot_state> hostMTS;	
 };
 
 class fluid_interface: public Interface 
@@ -127,7 +173,7 @@ class fluid_interface: public Interface
 	public:
 		fluid_interface(const std::string &str1 );	//Constructor
 		
-		int index = 666;		
+		int index = 555;		
 		std::shared_ptr<fluid_interface> target;		
 		std::shared_ptr<thermodynamic_state> hostTDS;
 		
@@ -179,8 +225,55 @@ class steam_turbine_solver
 		double TurbinePower = 0; //[W]		
 };
 
+class electric_generator_solver
+{
+	private:
+	
+	public:
+		electric_generator_solver(const std::string &str1);	//Constructor
+		void solve_generator_ac(const double &dts);	
+		std::string name = "electric_generator_solver";
+		int id=40;	
+		std::shared_ptr<electric_generator> connected_generator;
+		double GeneratorPower = 0; //[W]	
+};
+
 //######################################################################
 //Component Classes:
+
+class electric_generator: public GameObject
+{
+	private:
+	
+	public:
+		electric_generator(const std::string &str1, cv::Point2f pt1); //Constructor
+		int primeUpdate();
+		int update();
+		
+		int draw(cv::Mat &mat);
+		int draw_back(cv::Mat &mat);
+		int draw_front(cv::Mat &mat);
+		int draw_dynamics(cv::Mat &mat);
+		
+		int init_mechanical_interfaces();
+		int init_electrical_interfaces();
+		
+		int init_electrical_ac_state();
+		int init_mechanical_rot_state();
+		
+		cv::Point2f origin = cv::Point2f(0,0);
+		int index = 6000;
+		
+		
+		std::shared_ptr<electric_generator_solver> connected_solver;
+		
+		std::unordered_map<std::string,std::shared_ptr<mechanical_interface>> mechanical_interfaceMap = {};
+		std::unordered_map<std::string,std::shared_ptr<electric_interface>> electric_interfaceMap = {};
+		
+		std::unordered_map<std::string,std::shared_ptr<mechanical_rot_state>> mechanical_rot_stateMap = {};
+		std::unordered_map<std::string,std::shared_ptr<electric_ac_state>> electric_ac_stateMap = {};
+};
+
 
 class fluid_pipe: public GameObject
 {	

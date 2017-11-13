@@ -33,7 +33,12 @@ int game::place_reactor_components()
 	gameobjectsMap.emplace("fPump_1", std::make_shared<fluid_pump>("fPump_1",cv::Point2f(400,350)) );
 	gameobjectsMap.emplace("fPipe_2", std::make_shared<fluid_pipe>("fPipe_2",cv::Point2f(425,375)) );	
 	gameobjectsMap.emplace("fluid_tank_1", std::make_shared<fluid_tank>("fluid_tank_1",cv::Point2f(550,250)) );	
-	gameobjectsMap.emplace("steam_turbine_1", std::make_shared<steam_turbine>("steam_turbine_1",cv::Point2f(500,100)) );	
+	gameobjectsMap.emplace("steam_turbine_1", std::make_shared<steam_turbine>("steam_turbine_1",cv::Point2f(500,100)) );
+	
+		
+	gameobjectsMap.emplace("generator_1", std::make_shared<electric_generator>("generator_1",cv::Point2f(750,100)) );	
+	
+	
 	
 		
 	//-------------	
@@ -268,7 +273,7 @@ int game::draw_game_stats(cv::Mat &mat)
 	//--------------
 	//--------------
 	
-	plot_stat_box(mat,cv::Scalar(150,150,150),cv::Scalar(90,255,90),cv::Point2f(800,200),450,250,"Turbine_1 Stats:");
+	plot_stat_box(mat,cv::Scalar(150,150,150),cv::Scalar(90,255,90),cv::Point2f(800,250),450,250,"Turbine_1 Stats:");
 	
 	variable_name.push_back("steam_in Volume [m^3]:");
 	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->thermodynamic_stateMap.at("steam_in")->V )  );
@@ -280,7 +285,7 @@ int game::draw_game_stats(cv::Mat &mat)
 	variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->thermodynamic_stateMap.at("steam_in")->p/1000000 )  );
 			
 
-	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(255,90,90),cv::Point2f(810,225),variable_name,variable);
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(255,90,90),cv::Point2f(810,275),variable_name,variable);
 	variable_name.clear();
 	variable.clear();
 
@@ -300,7 +305,7 @@ int game::draw_game_stats(cv::Mat &mat)
 	//variable.push_back( std::to_string( GoCast<steam_turbine>("steam_turbine_1")->mechanical_rot_stateMap.at("rotation")->P/1000000 ));	
 	variable.push_back( std::to_string( solver_turbine_1->TurbinePower/1000000));	
 	
-	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,90,255),cv::Point2f(810,300),variable_name,variable);
+	plot_stats_list(mat,cv::Scalar(150,150,150),cv::Scalar(90,90,255),cv::Point2f(810,350),variable_name,variable);
 	variable_name.clear();
 	variable.clear();		
 	
