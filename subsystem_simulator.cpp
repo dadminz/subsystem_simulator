@@ -14,8 +14,10 @@
 #include "game.hpp"
 #include "game.cpp"
 
+
 void my_programm()
 {	
+	
 	//Initializing the Canvas CV_8UC3 8bits unsigned with 3 color channels Blue Green Red (BGR)
 	cv::Mat canvas = cv::Mat::zeros(cv::Size(1300, 800), CV_8UC3);		
 	//Initializing Mask (Layer)
